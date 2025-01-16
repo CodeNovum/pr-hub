@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Tauri Development Debug",
+      "program": "${workspaceFolder}/src-tauri/target/debug/pr-hub",
+      "preLaunchTask": "build:pr-hub"
+    }
+  ]
+}
