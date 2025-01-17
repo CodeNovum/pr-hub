@@ -40,7 +40,7 @@ pnpm dev
 
 To start the Rust part of the application (the backend) a [vscode](./.vscode/launch.json) launch
 file is provided, that ensures the backend is build and started in debug mode. This currently
-works for me when using [VSCode](https://code.visualstudio.com/https://code.visualstudio.com/)
+works for me when using [VSCode](https://code.visualstudio.com/)
 or the Neovim plugin [stevearc/overseer.nvim](https://github.com/stevearc/overseer.nvim).
 
 If this setup does not work for you, refer to the
