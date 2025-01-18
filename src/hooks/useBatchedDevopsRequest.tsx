@@ -1,8 +1,8 @@
-import { useMemo } from "react";
 import { Organization } from "../bindings/core";
 import { DevOpsRequest } from "../bindings/requests";
 import { useDevOpsProjects } from "./useDevOpsProjects";
 import useOrganizations from "./useOrganizations";
+import { useMemo } from "react";
 
 /**
  * Hook that retrieves a model used to perform optimized

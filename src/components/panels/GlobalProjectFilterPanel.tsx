@@ -1,9 +1,9 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { Project } from "../../bindings/devops";
-import Table from "../Table";
 import { useDevOpsProjects } from "../../hooks/useDevOpsProjects";
 import { Panel } from "../Panel";
+import Table from "../Table";
+import { ColumnDef } from "@tanstack/react-table";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface IGlobalProjectFilterPanelProps {
   isOpen: boolean;

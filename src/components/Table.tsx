@@ -1,3 +1,10 @@
+import { useIsDarkModeEnabled } from "../hooks/useIsDarkModeEnabled";
+import { Checkbox } from "./Checkbox";
+import { BusySpinnerOverlay } from "./busy/BusySpinnerOverlay";
+import {
+  ArrowSmallDownIcon,
+  ArrowSmallUpIcon,
+} from "@heroicons/react/24/solid";
 import {
   ColumnDef,
   flexRender,
@@ -12,13 +19,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  ArrowSmallDownIcon,
-  ArrowSmallUpIcon,
-} from "@heroicons/react/24/solid";
-import { BusySpinnerOverlay } from "./busy/BusySpinnerOverlay";
-import { Checkbox } from "./Checkbox";
-import { useIsDarkModeEnabled } from "../hooks/useIsDarkModeEnabled";
 
 interface ITableProps<TData> {
   columns: ColumnDef<TData>[];

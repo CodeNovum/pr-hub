@@ -1,10 +1,10 @@
+import { Organization } from "../bindings/core";
+import { useStoreActions } from "../store/store";
 import {
-  useMutation,
   UseMutationResult,
+  useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useStoreActions } from "../store/store";
-import { Organization } from "../bindings/core";
 import { invoke } from "@tauri-apps/api/core";
 
 /**

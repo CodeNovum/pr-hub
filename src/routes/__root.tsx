@@ -1,13 +1,13 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import { GlobalProjectFilterPanel } from "../components/panels/GlobalProjectFilterPanel";
-import { useState } from "react";
-import IconButton from "../components/button/IconButton";
-import { CogIcon } from "@heroicons/react/24/outline";
-import { PlusIcon } from "@heroicons/react/24/solid";
 import { DarkModeToggle } from "../components/DarkModeToggle";
+import IconButton from "../components/button/IconButton";
 import { PrimaryButton } from "../components/button/PrimaryButton";
 import { AddOrganizationPanel } from "../components/panels/AddOrganizationPanel";
+import { GlobalProjectFilterPanel } from "../components/panels/GlobalProjectFilterPanel";
+import { CogIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { useState } from "react";
 
 const Root = createRootRoute({
   component: () => {

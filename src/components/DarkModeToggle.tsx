@@ -1,5 +1,5 @@
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import { useIsDarkModeEnabled } from "../hooks/useIsDarkModeEnabled";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 
 /**
  * Button that toggles between light and dark mode

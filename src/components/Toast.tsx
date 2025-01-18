@@ -1,5 +1,5 @@
-import { XMarkIcon } from "@heroicons/react/24/solid";
 import IconButton from "./button/IconButton";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 type Toast_Type = {
   Undefined: 0;

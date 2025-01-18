@@ -1,7 +1,7 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { invoke } from "@tauri-apps/api/core";
-import { useStoreActions } from "../store/store";
 import { Organization } from "../bindings/core";
+import { useStoreActions } from "../store/store";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Hook to retrieve all imported Azure DevOps organizations

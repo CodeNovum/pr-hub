@@ -1,6 +1,6 @@
-import { ReactElement } from "react";
 import { IButtonProps } from "../../types/components";
 import { BusySpinner } from "../busy/BusySpinner";
+import { ReactElement } from "react";
 
 interface IPrimaryButtonProps extends IButtonProps {
   text: string;

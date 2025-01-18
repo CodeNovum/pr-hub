@@ -1,7 +1,7 @@
-import { ReactElement, Fragment } from "react";
+import IconButton from "./button/IconButton";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import IconButton from "./button/IconButton";
+import { Fragment, ReactElement } from "react";
 
 type Panel_Size = {
   Undefined: 0;
