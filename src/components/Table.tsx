@@ -62,9 +62,9 @@ const Table = <TData,>(props: ITableProps<TData>) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const obj = cellProps.row.original as any;
           const identifier = obj[props.identifierPropertyName as string];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const index = tmpCheckedItems.findIndex(
             (i) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (i as any)[props.identifierPropertyName as string] === identifier,
           );
           return (

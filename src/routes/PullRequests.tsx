@@ -35,7 +35,6 @@ const PullRequests = createRoute({
         return;
       }
       open(
-        // eslint-disable-next-line max-len
         `https://dev.azure.com/${pullRequest.organizationName}/${pullRequest.repository.project.name}/_git/${pullRequest.repository.name}/pullrequest/${pullRequest.pullRequestId}`,
       );
     };

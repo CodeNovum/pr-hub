@@ -3,13 +3,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import IconButton from "./button/IconButton";
 
-const Panel_Size = {
-  Undefined: 0,
-  Small: 1,
-  Medium: 2,
-  Large: 3,
-} as const;
-type PanelSize = keyof typeof Panel_Size;
+type Panel_Size = {
+  Undefined: 0;
+  Small: 1;
+  Medium: 2;
+  Large: 3;
+};
+type PanelSize = keyof Panel_Size;
 
 interface IPanelProps {
   isOpen: boolean;

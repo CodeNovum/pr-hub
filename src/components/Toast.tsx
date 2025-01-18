@@ -1,14 +1,14 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import IconButton from "./button/IconButton";
 
-const Toast_Type = {
-  Undefined: 0,
-  Info: 1,
-  Warning: 2,
-  Error: 3,
-  Success: 4,
-} as const;
-type ToastType = keyof typeof Toast_Type;
+type Toast_Type = {
+  Undefined: 0;
+  Info: 1;
+  Warning: 2;
+  Error: 3;
+  Success: 4;
+};
+type ToastType = keyof Toast_Type;
 
 interface IToastProps {
   type: ToastType;

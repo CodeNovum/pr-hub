@@ -1,26 +1,26 @@
 import { MutableRefObject, ReactNode, useMemo, useRef } from "react";
 import { TailwindSize } from "../types/components";
 
-const Stack_Vertical_Align = {
-  Undefined: 0,
-  Start: 1,
-  End: 2,
-  Center: 3,
-  Baseline: 4,
-  Stretch: 5,
-} as const;
-type StackVerticalAlign = keyof typeof Stack_Vertical_Align;
+type Stack_Vertical_Align = {
+  Undefined: 0;
+  Start: 1;
+  End: 2;
+  Center: 3;
+  Baseline: 4;
+  Stretch: 5;
+};
+type StackVerticalAlign = keyof Stack_Vertical_Align;
 
-const Stack_Horizontal_Align = {
-  Undefined: 0,
-  Start: 1,
-  End: 2,
-  Center: 3,
-  SpaceBetween: 4,
-  SpaceAround: 5,
-  SpaceEvenly: 6,
-} as const;
-type StackHorizontalAlign = keyof typeof Stack_Horizontal_Align;
+type Stack_Horizontal_Align = {
+  Undefined: 0;
+  Start: 1;
+  End: 2;
+  Center: 3;
+  SpaceBetween: 4;
+  SpaceAround: 5;
+  SpaceEvenly: 6;
+};
+type StackHorizontalAlign = keyof Stack_Horizontal_Align;
 
 interface IStackProps {
   children: ReactNode;
