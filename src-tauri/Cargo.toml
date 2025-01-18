@@ -1,0 +1,33 @@
+[package]
+name = "pr-hub"
+version = "0.1.0-alpha"
+description = "A Tauri App"
+authors = ["eugen-meissner", "robin-thoene"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "pr_hub_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ts-rs = "6.2.1"
+base64 = "0.21.0"
+reqwest = { version = "0.11", features = ["json"] }
+chrono = { version = "0.4.24", features = ["serde"] }
+futures = "0.3.17"
+anyhow = "1.0.75"
+rusqlite = { version = "0.29.0", features = ["bundled"] }
+keyring = "2"
+lazy_static = "1.4.0"

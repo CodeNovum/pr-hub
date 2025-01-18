@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply m-0 min-h-screen w-full min-w-full max-w-full overflow-hidden p-0;
+}
+
+h1 {
+  @apply my-4 text-5xl font-medium;
+}
+
+h2 {
+  @apply my-4 text-3xl font-medium;
+}
+
+h3 {
+  @apply my-4 text-xl font-medium;
+}
+
+p {
+  @apply my-4;
+}
+
+ul {
+  @apply ml-6 list-disc;
+}
+
+ol {
+  @apply ml-6 list-decimal;
+}
+
+ol > ol {
+  @apply ml-6;
+}
+
+ul > ul {
+  @apply ml-6;
+}
+
+ul > ol {
+  @apply ml-6;
+}
+
+ol > ul {
+  @apply ml-6;
+}
+
+.btn {
+  @apply no-animation active:opacity-70;
+}
+
+.btn:active:hover,
+.btn:active:focus {
+  @apply transform-none;
+}
+
+.input:focus {
+  @apply outline-none;
+}
