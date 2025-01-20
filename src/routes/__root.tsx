@@ -6,7 +6,6 @@ import { GlobalProjectFilterPanel } from "../components/panels/GlobalProjectFilt
 import { CogIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useState } from "react";
 
 const Root = createRootRoute({
@@ -46,7 +45,6 @@ const Root = createRootRoute({
           <div className="flex flex-1 overflow-hidden">
             <Outlet />
           </div>
-          <TanStackRouterDevtools />
         </div>
         <GlobalProjectFilterPanel
           isOpen={isProjectFilterOpen}
