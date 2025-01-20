@@ -6,7 +6,7 @@
   "scripts": {
     "gen-models": "./scripts/prebuild.sh",
     "dev": "pnpm gen-models && vite",
-    "build": "pnpm gen-models && tsc && vite build && pnpm lint",
+    "build": "tsc && vite build && pnpm lint",
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "eslint src",
