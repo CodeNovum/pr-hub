@@ -1,6 +1,6 @@
 [package]
 name = "pr-hub"
-version = "0.1.0-alpha"
+version = "0.0.0"
 description = "A Tauri App"
 authors = ["eugen-meissner", "robin-thoene"]
 edition = "2021"
