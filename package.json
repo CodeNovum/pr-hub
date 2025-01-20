@@ -4,8 +4,9 @@
   "version": "0.1.0-alpha",
   "type": "module",
   "scripts": {
-    "dev": "scripts/prebuild.sh && vite",
-    "build": "tsc && vite build && pnpm lint",
+    "gen-models": "scripts/prebuild.sh",
+    "dev": "pnpm gen-models && vite",
+    "build": "pnpm gen-models && tsc && vite build && pnpm lint",
     "preview": "vite preview",
     "tauri": "tauri",
     "lint": "eslint src",
