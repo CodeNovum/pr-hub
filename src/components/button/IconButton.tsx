@@ -1,6 +1,6 @@
-import { ReactElement } from "react";
 import { IButtonProps, TailwindSize } from "../../types/components";
 import { BusySpinner } from "../busy/BusySpinner";
+import { ReactElement } from "react";
 
 interface IIconButtonProps extends IButtonProps {
   icon: ReactElement;

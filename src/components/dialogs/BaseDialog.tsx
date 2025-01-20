@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import { PrimaryButton } from "../button/PrimaryButton";
 import { DefaultButton } from "../button/DefaultButton";
+import { PrimaryButton } from "../button/PrimaryButton";
+import { ReactNode } from "react";
 
 interface IDialogProps {
   isOpen: boolean;

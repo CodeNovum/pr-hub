@@ -1,8 +1,8 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { PullRequest } from "../bindings/devops";
-import { invoke } from "@tauri-apps/api/core";
 import { useStoreActions } from "../store/store";
 import { useBatchedDevopsRequest } from "./useBatchedDevopsRequest";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Hook to retrieve all pull requests across imported organization

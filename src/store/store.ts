@@ -1,5 +1,5 @@
-import { createStore, createTypedHooks } from "easy-peasy";
 import { ApplicationModel, IApplicationModel } from "./models/applicationModel";
+import { createStore, createTypedHooks } from "easy-peasy";
 
 interface IStoreModel {
   ApplicationModel: IApplicationModel;

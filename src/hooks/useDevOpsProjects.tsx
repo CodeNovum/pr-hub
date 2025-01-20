@@ -1,7 +1,7 @@
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { invoke } from "@tauri-apps/api/core";
 import { Project } from "../bindings/devops";
 import { useStoreActions } from "../store/store";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Hook to retrieve the list of Azure DevOps projects marked

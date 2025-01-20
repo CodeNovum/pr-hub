@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
-import { PrimaryButton } from "../button/PrimaryButton";
-import { Panel } from "../Panel";
 import { useAddOrganizationMutation } from "../../hooks/useAddOrganizationMutation";
-import { Stack } from "../Stack";
 import { Input } from "../Input";
+import { Panel } from "../Panel";
+import { Stack } from "../Stack";
+import { PrimaryButton } from "../button/PrimaryButton";
+import { useCallback, useMemo, useState } from "react";
 
 interface IAddOrganizationPanelProps {
   isOpen: boolean;

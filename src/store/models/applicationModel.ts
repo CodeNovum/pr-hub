@@ -1,5 +1,5 @@
-import { Action, action } from "easy-peasy";
 import { IGlobalNotification } from "../../types/globalNotification";
+import { Action, action } from "easy-peasy";
 
 interface IApplicationModel {
   globalNotification?: IGlobalNotification;

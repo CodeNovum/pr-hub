@@ -1,18 +1,18 @@
-import { open } from "@tauri-apps/plugin-shell";
-import { createRoute } from "@tanstack/react-router";
-import { Root } from "./__root";
-import { useMemo, useState } from "react";
 import { DevOpsUser, Label, PullRequest } from "../bindings/devops";
-import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns/format";
-import IconButton from "../components/button/IconButton";
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
-import { LinkIcon } from "@heroicons/react/24/outline";
-import { Stack } from "../components/Stack";
 import { Panel } from "../components/Panel";
+import { Stack } from "../components/Stack";
 import Table from "../components/Table";
-import { usePullRequests } from "../hooks/usePullRequests";
 import { Tag } from "../components/Tag";
+import IconButton from "../components/button/IconButton";
+import { usePullRequests } from "../hooks/usePullRequests";
+import { Root } from "./__root";
+import { LinkIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/solid";
+import { createRoute } from "@tanstack/react-router";
+import { ColumnDef } from "@tanstack/react-table";
+import { open } from "@tauri-apps/plugin-shell";
+import { format } from "date-fns/format";
+import { useMemo, useState } from "react";
 
 const PullRequests = createRoute({
   getParentRoute: () => Root,
@@ -35,7 +35,6 @@ const PullRequests = createRoute({
         return;
       }
       open(
-        // eslint-disable-next-line max-len
         `https://dev.azure.com/${pullRequest.organizationName}/${pullRequest.repository.project.name}/_git/${pullRequest.repository.name}/pullrequest/${pullRequest.pullRequestId}`,
       );
     };

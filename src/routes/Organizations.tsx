@@ -1,15 +1,15 @@
-import { createRoute } from "@tanstack/react-router";
-import { Root } from "./__root";
 import { Organization } from "../bindings/core";
-import { useMemo, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import { CloudArrowUpIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import IconButton from "../components/button/IconButton";
 import Table from "../components/Table";
-import useOrganizations from "../hooks/useOrganizations";
+import IconButton from "../components/button/IconButton";
 import { ConfirmOrganizationDeleteDialog } from "../components/dialogs/ConfirmOrganizationDeleteDialog";
 import { UpdatePatDialog } from "../components/dialogs/UpdatePatDialog";
+import useOrganizations from "../hooks/useOrganizations";
+import { Root } from "./__root";
+import { CloudArrowUpIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { createRoute } from "@tanstack/react-router";
+import { ColumnDef } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
 
 const Organizations = createRoute({
   getParentRoute: () => Root,
