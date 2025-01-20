@@ -4,7 +4,7 @@
   "version": "0.1.0-alpha",
   "type": "module",
   "scripts": {
-    "gen-models": "scripts/prebuild.sh",
+    "gen-models": "./scripts/prebuild.sh",
     "dev": "pnpm gen-models && vite",
     "build": "pnpm gen-models && tsc && vite build && pnpm lint",
     "preview": "vite preview",
