@@ -1,4 +1,4 @@
-name: validate
+name: ci_cd
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ jobs:
   # This job is taken from here:
   # https://github.com/tauri-apps/tauri-action/blob/045ee3f8d86eeb363341a7fd543e7e6a8a282b87/examples/test-build-only.yml
   # It ensures that the tauri app can be build for all targeted platforms
-  validate-tauri:
+  build-tauri:
     strategy:
       fail-fast: false
       matrix:
