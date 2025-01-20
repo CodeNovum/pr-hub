@@ -6,12 +6,18 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      release:
+        description: "True to build and publish a new release, including an automatic version increase"
+        required: false
+        type: boolean
+
+env:
+  ARTIFACT_NAME_VERSION: pr-hub-version
 
 jobs:
   # Ensure code quality against set rules
   validate-code:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +28,33 @@ jobs:
         run: pnpm lint
       - name: frontend formatter check
         run: pnpm check-format
+
+  # Automatically determine the next semver and store it as artifact
+  determine-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.0.2
+        with:
+          versionSpec: "5.x"
+      - name: Determine version
+        uses: gittools/actions/gitversion/execute@v3.0.2
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
+      - name: Store version
+        run: |
+          mkdir dist
+          echo  "$GitVersion_FullSemVer" > ./dist/version.txt
+      - name: Publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME_VERSION }}
+          path: dist
 
   # This job is taken from here:
   # https://github.com/tauri-apps/tauri-action/blob/045ee3f8d86eeb363341a7fd543e7e6a8a282b87/examples/test-build-only.yml
@@ -40,6 +73,7 @@ jobs:
           - platform: "windows-latest"
             args: ""
     runs-on: ${{ matrix.platform }}
+    needs: [validate-code, determine-version]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
