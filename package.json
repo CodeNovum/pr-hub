@@ -1,7 +1,6 @@
 {
   "name": "pr-hub",
   "private": false,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "gen-models": "./scripts/prebuild.sh",
