@@ -6,12 +6,18 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      release:
+        description: "True to build and publish a new release, including an automatic version increase"
+        required: false
+        type: boolean
+
+env:
+  ARTIFACT_NAME_VERSION: pr-hub-version
 
 jobs:
   # Ensure code quality against set rules
   validate-code:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,10 +29,38 @@ jobs:
       - name: frontend formatter check
         run: pnpm check-format
 
+  # Automatically determine the next semver and store it as artifact
+  determine-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.0.2
+        with:
+          versionSpec: "5.x"
+      - name: determine version
+        uses: gittools/actions/gitversion/execute@v3.0.2
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
+      - name: store version
+        run: |
+          mkdir dist
+          echo  "$GitVersion_FullSemVer" > ./dist/version.txt
+      - name: publish version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME_VERSION }}
+          path: dist
+
   # This job is taken from here:
   # https://github.com/tauri-apps/tauri-action/blob/045ee3f8d86eeb363341a7fd543e7e6a8a282b87/examples/test-build-only.yml
   # It ensures that the tauri app can be build for all targeted platforms
   build-tauri:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +74,7 @@ jobs:
           - platform: "windows-latest"
             args: ""
     runs-on: ${{ matrix.platform }}
+    needs: [validate-code, determine-version]
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -61,8 +96,40 @@ jobs:
       - name: generate models
         run: ./scripts/prebuild.sh
         shell: bash
-      - uses: tauri-apps/tauri-action@v0
+      # Set the detected version
+      - name: download version artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME_VERSION }}
+          path: dist
+      - name: Load version
+        run: echo "VERSION=$(cat ./dist/version.txt)" >> $GITHUB_ENV
+        shell: bash
+      - name: install cargo-edit
+        run: cargo install cargo-edit
+      - name: set new version
+        run: |
+          cd ./src-tauri
+          cargo set-version ${{ env.VERSION }}
+        shell: bash
+      # Build for validation if the action input for release is false
+      - name: build tauri app
+        uses: tauri-apps/tauri-action@v0
+        if: ${{ inputs.release == false }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          args: ${{ matrix.args }}
+      # Build and release if the action input for release is true
+      - name: build and release tauri app
+        uses: tauri-apps/tauri-action@v0
+        if: ${{ inputs.release == true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__
+          releaseName: "App v__VERSION__"
+          releaseBody: "See the assets to download this version and install."
+          releaseDraft: true
+          prerelease: false
           args: ${{ matrix.args }}

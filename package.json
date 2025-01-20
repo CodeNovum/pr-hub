@@ -1,7 +1,6 @@
 {
   "name": "pr-hub",
   "private": false,
-  "version": "0.1.0-alpha",
   "type": "module",
   "scripts": {
     "gen-models": "./scripts/prebuild.sh",
@@ -30,7 +29,6 @@
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@tanstack/eslint-plugin-query": "^5.62.16",
-    "@tanstack/router-devtools": "^1.97.1",
     "@tanstack/router-plugin": "^1.97.1",
     "@tauri-apps/cli": "^2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.1",

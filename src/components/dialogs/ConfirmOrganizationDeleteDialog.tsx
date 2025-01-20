@@ -1,4 +1,4 @@
-import { Organization } from "../../bindings/core";
+﻿import { Organization } from "../../bindings/core";
 import { useRemoveOrganizationMutation } from "../../hooks/useRemoveOrganizationMutation";
 import { BaseDialog } from "./BaseDialog";
 
