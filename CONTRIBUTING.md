@@ -7,6 +7,7 @@
 To start the app locally in dev mode, you need the following tooling installed:
 
 - [rust and cargo](https://www.rust-lang.org/tools/install)
+- [tauri-cli](https://v2.tauri.app/reference/cli/)
 - [node](https://nodejs.org/en/download)
 - [pnpm](https://pnpm.io/installation)
 
@@ -25,6 +26,8 @@ Then you can start the app in development mode:
 
 ```shell
 cargo tauri dev
+OR
+pnpm tauri dev
 ```
 
 If you want to start the app using pnpm, or have other issues, refer to the official
