@@ -4,7 +4,7 @@
 
 A central entry point to view pull requests across repositories.
 Currently this targets only the platform [Azure DevOps](https://dev.azure.com/)
-and enables viewing pull request related data across multiple tenants,
+and enables viewing pull request related data across multiple organizations,
 projects and repositories.
 
 ## Installation
