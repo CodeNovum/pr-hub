@@ -5,6 +5,5 @@ use ts_rs::TS;
 #[ts(export, export_to = "../src/bindings/devops/")]
 #[serde(default)]
 pub struct Response<T> {
-    pub count: Option<i32>,
     pub value: Option<Vec<T>>,
 }
