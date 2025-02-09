@@ -1,13 +1,15 @@
 use crate::{
     http::http_client::get_http_client,
     model::devops::{
-        connection_data::ConnectionData, project::Project, pull_request::PullRequest,
-        pull_request_comment_thread::PullRequestCommentThread, response::Response,
+        connection_data::ConnectionData, git_repository::GitRepository, project::Project,
+        pull_request::PullRequest, pull_request_comment_thread::PullRequestCommentThread,
+        response::Response,
     },
 };
 use anyhow::Result;
 use base64;
 use base64::Engine;
+use futures::future::join_all;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use serde;
 
@@ -25,7 +27,6 @@ const DEVOPS_API_BASE_URL: &str = "https://dev.azure.com";
 /// # Returns
 ///
 /// * `Result<T>` - The result of the request as the generic type T.
-///
 async fn perform_get_request<T>(
     pat: &str,
     base_url: &str,
@@ -64,7 +65,6 @@ where
 /// # Returns
 ///
 /// * `bool` - True if the given pat is valid for the given organization, false otherwise.
-///
 pub async fn validate_pat(pat: &str, organization_name: &str) -> bool {
     let relative_url = format!("{}/_apis/connectionData", organization_name);
     let result =
@@ -82,11 +82,10 @@ pub async fn validate_pat(pat: &str, organization_name: &str) -> bool {
 ///
 /// # Returns
 ///
-/// * `Result<Vec<Project>>` - The retrieved list of projects.
-///
-pub async fn get_projects(pat: &str, organization_name: &str) -> Result<Vec<Project>> {
+/// * `Result<Vec<GitRepository>>` - The retrieved list of repositories.
+pub async fn get_repositories(pat: &str, organization_name: &str) -> Result<Vec<GitRepository>> {
     let relative_url = format!("{}/_apis/projects", organization_name);
-    let result =
+    let projects =
         perform_get_request::<Response<Project>>(pat, DEVOPS_API_BASE_URL, &relative_url, None)
             .await
             .map(|response| {
@@ -98,9 +97,46 @@ pub async fn get_projects(pat: &str, organization_name: &str) -> Result<Vec<Proj
                         project.organization_name = Some(organization_name.to_string());
                         project
                     })
-                    .collect()
+                    .collect::<Vec<Project>>()
             })?;
-    Ok(result)
+    let mut tasks = Vec::new();
+    for project in projects {
+        tasks.push(async move {
+            let mut result = vec![];
+            let relative_url = format!(
+                "{}/{}/_apis/git/repositories",
+                organization_name,
+                project.name.clone()
+            );
+            let response = perform_get_request::<Response<GitRepository>>(
+                pat,
+                DEVOPS_API_BASE_URL,
+                &relative_url,
+                None,
+            )
+            .await;
+            match response {
+                Ok(r) => result.extend(
+                    r.value
+                        .into_iter()
+                        .flatten()
+                        .collect::<Vec<GitRepository>>(),
+                ),
+                Err(error) => {
+                    println!("Error: {}", error);
+                    return result;
+                }
+            }
+            for repo in result.iter_mut() {
+                if let Some(project) = repo.project.as_mut() {
+                    project.organization_name = Some(organization_name.to_string());
+                }
+            }
+            result
+        });
+    }
+    let task_results = join_all(tasks).await;
+    Ok(task_results.into_iter().flatten().collect())
 }
 
 /// Retrieves all open pull requests for a DevOps project.
@@ -110,19 +146,20 @@ pub async fn get_projects(pat: &str, organization_name: &str) -> Result<Vec<Proj
 /// * `pat` - The DevOps personal access token.
 /// * `organization_name` - The DevOps organization name.
 /// * `project_name` - The DevOps project name.
+/// * `repository_name` - The DevOps repository name.
 ///
 /// # Returns
 ///
 /// * `Result<Vec<PullRequest>>` - The retrieved list of open pull requests.
-///
 pub async fn get_open_pull_requests(
     pat: &str,
     organization_name: &str,
     project_name: &str,
+    repository_name: &str,
 ) -> Result<Vec<PullRequest>> {
     let relative_url = format!(
-        "{}/{}/_apis/git/pullrequests",
-        organization_name, project_name
+        "{}/{}/_apis/git/repositories/{}/pullrequests",
+        organization_name, project_name, repository_name
     );
     let result =
         perform_get_request::<Response<PullRequest>>(pat, DEVOPS_API_BASE_URL, &relative_url, None)
@@ -144,7 +181,6 @@ pub async fn get_open_pull_requests(
 /// # Returns
 ///
 /// * `Result<Vec<PullRequestCommentThread>>` - The retrieved list of pull request comment threads.
-///
 pub async fn get_pull_request_comment_threads(
     pat: &str,
     organization_name: &str,

@@ -1,4 +1,5 @@
 import { Organization } from "../bindings/core";
+import { COMMAND_UPDATE_PAT } from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -31,7 +32,7 @@ const useUpdatePatMutation = (): UseMutationResult<
   return useMutation({
     mutationFn: async (organization: Organization) => {
       try {
-        await invoke("update_pat", {
+        await invoke(COMMAND_UPDATE_PAT, {
           id: organization.id,
           patValue: organization.pat,
         });

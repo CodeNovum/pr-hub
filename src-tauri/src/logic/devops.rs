@@ -2,7 +2,7 @@ use crate::{
     constants::SERVICE_NAME,
     logic,
     model::{
-        devops::{project::Project, pull_request::PullRequest},
+        devops::{git_repository::GitRepository, pull_request::PullRequest},
         requests::devops_request::DevOpsRequest,
     },
     repositories,
@@ -11,20 +11,20 @@ use anyhow::{anyhow, Result};
 use futures::future::join_all;
 use keyring::Entry;
 
-/// Retrieve the list of all projects from Azure DevOps the user has access to because of the imported DevOps organizations.
+/// Retrieve the list of all git repositories from Azure DevOps the user has access to
+/// because of the imported DevOps organizations.
 ///
 /// # Returns
 ///
-/// The list of all projects.
-///
-pub async fn get_projects() -> Result<Vec<Project>> {
+/// The list of all repositories.
+pub async fn get_repositories() -> Result<Vec<GitRepository>> {
     let organizations = logic::organizations::get_organizations(true).await?;
     let mut tasks = Vec::new();
     for organization in organizations.iter() {
         if !organization.is_pat_valid {
             continue;
         }
-        tasks.push(repositories::devops::get_projects(
+        tasks.push(repositories::devops::get_repositories(
             &organization.pat,
             &organization.name,
         ))
@@ -42,7 +42,6 @@ pub async fn get_projects() -> Result<Vec<Project>> {
 /// # Arguments
 ///
 /// * `request_models` - The list of all request models to retrieve the pull requests for.
-///
 pub async fn get_open_pull_requests_batched(
     request_models: &Vec<DevOpsRequest>,
 ) -> Result<Vec<PullRequest>> {
@@ -53,91 +52,88 @@ pub async fn get_open_pull_requests_batched(
             continue;
         }
         let pat = &request_model.organization.pat;
-        for project_name in request_model.project_names.iter() {
-            if project_name.is_none() {
-                // Skip invalid project names.
-                continue;
-            }
-            let name = match project_name {
-                Some(n) => n,
-                None => {
-                    return Err(anyhow!("Invalid project name."));
-                }
-            };
-            tasks.push(async {
-                let mut result = Vec::new();
-                let response = repositories::devops::get_open_pull_requests(
-                    pat,
-                    &request_model.organization.name,
-                    name,
-                )
-                .await;
-                match response {
-                    Ok(pull_requests) => result.extend(pull_requests),
-                    Err(error) => {
-                        println!("Error: {}", error);
-                        return result;
-                    }
-                }
-                for pull_request in result.iter_mut() {
-                    pull_request.organization_name = Some(request_model.organization.name.clone());
-                    if pull_request.repository.is_none() || pull_request.pull_request_id.is_none() {
-                        // Skip invalid pull requests.
-                        continue;
-                    }
-                    let repository_result = pull_request
-                        .repository
-                        .as_ref()
-                        .ok_or(anyhow!("Invalid repository."));
-                    let repository = match repository_result {
-                        Ok(repo) => repo,
-                        Err(error) => {
-                            println!("Error: {}", error);
-                            return result;
-                        }
-                    };
-                    if repository.id.is_none() {
-                        // Skip invalid repositories.
-                        continue;
-                    }
-                    let repository_id_result = repository
-                        .id
-                        .as_ref()
-                        .ok_or(anyhow!("Invalid repository ID."));
-                    let repository_id = match repository_id_result {
-                        Ok(id) => id,
-                        Err(error) => {
-                            println!("Error: {}", error);
-                            return result;
-                        }
-                    };
-                    let pull_request_id_result = pull_request
-                        .pull_request_id
-                        .ok_or(anyhow!("Invalid pull request ID."));
-                    let pull_request_id = match pull_request_id_result {
-                        Ok(id) => id,
-                        Err(error) => {
-                            println!("Error: {}", error);
-                            return result;
-                        }
-                    };
-                    let comment_threads = repositories::devops::get_pull_request_comment_threads(
+        for repo_tuple in request_model.repositories.iter() {
+            if let Some(repo_tuple) = repo_tuple {
+                tasks.push(async {
+                    let mut result = Vec::new();
+                    let response = repositories::devops::get_open_pull_requests(
                         pat,
                         &request_model.organization.name,
-                        name,
-                        repository_id,
-                        &pull_request_id,
+                        &repo_tuple.0,
+                        &repo_tuple.1,
                     )
                     .await;
-                    match comment_threads {
-                        Ok(pull_request_comment_threads) => {
-                            pull_request.comment_threads = Some(pull_request_comment_threads);
+                    match response {
+                        Ok(pull_requests) => result.extend(pull_requests),
+                        Err(error) => {
+                            println!("Error: {}", error);
+                            return result;
                         }
-                        Err(error) => println!("Error: {}", error),
                     }
-                }
-                result
-            });
+                    for pull_request in result.iter_mut() {
+                        pull_request.organization_name =
+                            Some(request_model.organization.name.clone());
+                        if pull_request.repository.is_none()
+                            || pull_request.pull_request_id.is_none()
+                        {
+                            // Skip invalid pull requests.
+                            continue;
+                        }
+                        let repository_result = pull_request
+                            .repository
+                            .as_ref()
+                            .ok_or(anyhow!("Invalid repository."));
+                        let repository = match repository_result {
+                            Ok(repo) => repo,
+                            Err(error) => {
+                                println!("Error: {}", error);
+                                return result;
+                            }
+                        };
+                        if repository.id.is_none() {
+                            // Skip invalid repositories.
+                            continue;
+                        }
+                        let repository_id_result = repository
+                            .id
+                            .as_ref()
+                            .ok_or(anyhow!("Invalid repository ID."));
+                        let repository_id = match repository_id_result {
+                            Ok(id) => id,
+                            Err(error) => {
+                                println!("Error: {}", error);
+                                return result;
+                            }
+                        };
+                        let pull_request_id_result = pull_request
+                            .pull_request_id
+                            .ok_or(anyhow!("Invalid pull request ID."));
+                        let pull_request_id = match pull_request_id_result {
+                            Ok(id) => id,
+                            Err(error) => {
+                                println!("Error: {}", error);
+                                return result;
+                            }
+                        };
+                        let comment_threads =
+                            repositories::devops::get_pull_request_comment_threads(
+                                pat,
+                                &request_model.organization.name,
+                                &repo_tuple.0,
+                                repository_id,
+                                &pull_request_id,
+                            )
+                            .await;
+                        match comment_threads {
+                            Ok(pull_request_comment_threads) => {
+                                pull_request.comment_threads = Some(pull_request_comment_threads);
+                            }
+                            Err(error) => println!("Error: {}", error),
+                        }
+                    }
+                    result
+                });
+            }
         }
     }
     let task_results = join_all(tasks).await;
@@ -157,7 +153,6 @@ pub async fn get_open_pull_requests_batched(
 /// # Returns
 ///
 /// The list of DevOps request models with the PAT set.
-///
 fn get_pats_for_request_models(models: &Vec<DevOpsRequest>) -> Vec<DevOpsRequest> {
     let mut result = Vec::new();
     for model in models {

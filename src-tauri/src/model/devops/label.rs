@@ -7,5 +7,4 @@ use ts_rs::TS;
 pub struct Label {
     pub id: Option<String>,
     pub name: Option<String>,
-    pub active: Option<bool>,
 }

@@ -2,7 +2,7 @@ use crate::{
     logic,
     model::{
         core::organization::Organization,
-        devops::{project::Project, pull_request::PullRequest},
+        devops::{git_repository::GitRepository, pull_request::PullRequest},
         requests::devops_request::DevOpsRequest,
     },
 };
@@ -12,7 +12,6 @@ use crate::{
 /// # Returns
 ///
 /// The list of all organizations.
-///
 #[tauri::command]
 pub async fn get_organizations() -> Vec<Organization> {
     let organizations = logic::organizations::get_organizations(false).await;
@@ -24,7 +23,6 @@ pub async fn get_organizations() -> Vec<Organization> {
 /// # Arguments
 ///
 /// * `orga_name` - The name of the organization to add
-///
 #[tauri::command]
 pub async fn add_organization(orga_name: String, pat_value: String) -> Result<i64, String> {
     let result = logic::organizations::add_organization(&orga_name, &pat_value);
@@ -39,7 +37,6 @@ pub async fn add_organization(orga_name: String, pat_value: String) -> Result<i6
 /// # Arguments
 ///
 /// * `id` - The id of the organization to remove.
-///
 #[tauri::command]
 pub fn remove_organization(id: i64) -> Result<(), String> {
     let result = logic::organizations::remove_organization(&id);
@@ -55,7 +52,6 @@ pub fn remove_organization(id: i64) -> Result<(), String> {
 ///
 /// * `id` - The id of the organization to update the PAT for.
 /// * `pat_value` - The new PAT value.
-///
 #[tauri::command]
 pub fn update_pat(id: i64, pat_value: &str) -> Result<(), String> {
     let result = logic::organizations::update_pat(&id, pat_value);
@@ -65,18 +61,17 @@ pub fn update_pat(id: i64, pat_value: &str) -> Result<(), String> {
     }
 }
 
-/// Command to retrieve the list of all projects from Azure DevOps the user has
+/// Command to retrieve the list of all repositories from Azure DevOps the user has
 /// access to because of the imported DevOps organizations.
 ///
 /// # Returns
 ///
-/// The list of all projects.
-///
+/// The list of all repositories.
 #[tauri::command]
-pub async fn get_projects() -> Result<Vec<Project>, String> {
-    let result = logic::devops::get_projects().await;
+pub async fn get_repositories() -> Result<Vec<GitRepository>, String> {
+    let result = logic::devops::get_repositories().await;
     match result {
-        Ok(projects) => Ok(projects),
+        Ok(repositories) => Ok(repositories),
         Err(error) => Err(error.to_string()),
     }
 }
@@ -90,7 +85,6 @@ pub async fn get_projects() -> Result<Vec<Project>, String> {
 /// # Returns
 ///
 /// The list of all open pull requests.
-///
 #[tauri::command]
 pub async fn get_open_pull_requests_batched(
     request_models: Vec<DevOpsRequest>,

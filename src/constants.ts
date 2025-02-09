@@ -1,0 +1,18 @@
+const ACTIVE_REPOS_LOCAL_STORAGE_KEY = "selected-repository-ids";
+
+const COMMAND_GET_ORGANIZATIONS = "get_organizations";
+const COMMAND_ADD_ORGANIZATION = "add_organization";
+const COMMAND_REMOVE_ORGANIZATION = "remove_organization";
+const COMMAND_UPDATE_PAT = "update_pat";
+const COMMAND_GET_REPOSITORIES = "get_repositories";
+const COMMAND_GET_OPEN_PULL_REQUESTS = "get_open_pull_requests_batched";
+
+export {
+  ACTIVE_REPOS_LOCAL_STORAGE_KEY,
+  COMMAND_GET_OPEN_PULL_REQUESTS,
+  COMMAND_GET_REPOSITORIES,
+  COMMAND_UPDATE_PAT,
+  COMMAND_REMOVE_ORGANIZATION,
+  COMMAND_ADD_ORGANIZATION,
+  COMMAND_GET_ORGANIZATIONS,
+};

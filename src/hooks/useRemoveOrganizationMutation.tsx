@@ -1,3 +1,4 @@
+import { COMMAND_REMOVE_ORGANIZATION } from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -29,7 +30,7 @@ const useRemoveOrganizationMutation = (): UseMutationResult<
   return useMutation({
     mutationFn: async (organizationId: number) => {
       try {
-        await invoke("remove_organization", { id: organizationId });
+        await invoke(COMMAND_REMOVE_ORGANIZATION, { id: organizationId });
         updateGlobalNotificationMessage({
           message: "Organization was removed",
           type: "Success",
