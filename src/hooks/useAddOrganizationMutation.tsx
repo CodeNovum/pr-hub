@@ -1,3 +1,4 @@
+import { COMMAND_ADD_ORGANIZATION } from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -37,7 +38,7 @@ const useAddOrganizationMutation = (): UseMutationResult<
       personalAccessTokenValue,
     }: IMutationFunctionParams) => {
       try {
-        await invoke("add_organization", {
+        await invoke(COMMAND_ADD_ORGANIZATION, {
           orgaName: organizationName,
           patValue: personalAccessTokenValue,
         });

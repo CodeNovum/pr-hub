@@ -1,4 +1,5 @@
 import { Organization } from "../bindings/core";
+import { COMMAND_GET_ORGANIZATIONS } from "../constants";
 import { useStoreActions } from "../store/store";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
@@ -17,7 +18,7 @@ const useOrganizations = (): UseQueryResult<Organization[]> => {
     queryKey: ["user-organizations"],
     queryFn: async () => {
       try {
-        const result = await invoke<Organization[]>("get_organizations");
+        const result = await invoke<Organization[]>(COMMAND_GET_ORGANIZATIONS);
         return result;
       } catch (error) {
         console.error(error);

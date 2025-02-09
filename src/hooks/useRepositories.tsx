@@ -1,5 +1,8 @@
 import { GitRepository } from "../bindings/devops";
-import { activeRepositoriesLocalStorageKey } from "../constants";
+import {
+  ACTIVE_REPOS_LOCAL_STORAGE_KEY,
+  COMMAND_GET_REPOSITORIES,
+} from "../constants";
 import { useStoreActions } from "../store/store";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
@@ -20,10 +23,10 @@ const useRepositories = (): UseQueryResult<GitRepository[]> => {
     queryFn: async () => {
       try {
         // Fetch the imported repositories for the user.
-        const result = await invoke<GitRepository[]>("get_repositories");
+        const result = await invoke<GitRepository[]>(COMMAND_GET_REPOSITORIES);
         // Hydrate the repository status regarding to the filter.
         const storedRepositoryIdsForGlobalFilter = localStorage.getItem(
-          activeRepositoriesLocalStorageKey,
+          ACTIVE_REPOS_LOCAL_STORAGE_KEY,
         );
         if (storedRepositoryIdsForGlobalFilter) {
           // There is a stored filter. Apply it.

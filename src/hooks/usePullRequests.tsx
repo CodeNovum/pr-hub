@@ -1,4 +1,5 @@
 import { PullRequest } from "../bindings/devops";
+import { COMMAND_GET_OPEN_PULL_REQUESTS } from "../constants";
 import { useStoreActions } from "../store/store";
 import { useBatchedDevopsRequest } from "./useBatchedDevopsRequest";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
@@ -21,7 +22,7 @@ const usePullRequests = (): UseQueryResult<PullRequest[]> => {
     queryFn: async () => {
       try {
         if (requestBody && requestBody.length > 0) {
-          const result = await invoke("get_open_pull_requests_batched", {
+          const result = await invoke(COMMAND_GET_OPEN_PULL_REQUESTS, {
             requestModels: requestBody,
           });
           return result;

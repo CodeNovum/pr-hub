@@ -1,5 +1,5 @@
 import { GitRepository } from "../../bindings/devops";
-import { activeRepositoriesLocalStorageKey } from "../../constants";
+import { ACTIVE_REPOS_LOCAL_STORAGE_KEY } from "../../constants";
 import { useRepositories } from "../../hooks/useRepositories";
 import { Panel } from "../Panel";
 import Table from "../Table";
@@ -32,7 +32,7 @@ const GlobalRepositoriesFilterPanel = (
   const updateCheckedRepositories = (repos: GitRepository[]) => {
     const selectedRepositoryIds = repos.map((checkedRepo) => checkedRepo.id);
     localStorage.setItem(
-      activeRepositoriesLocalStorageKey,
+      ACTIVE_REPOS_LOCAL_STORAGE_KEY,
       JSON.stringify(selectedRepositoryIds),
     );
     setCheckedRepositories([...repos]);
