@@ -6,7 +6,7 @@ use ts_rs::TS;
 #[ts(export, export_to = "../src/bindings/requests/")]
 pub struct DevOpsRequest {
     pub organization: Organization,
-    #[ts(rename = "projectNames")]
-    #[serde(rename = "projectNames")]
-    pub project_names: Vec<Option<String>>,
+    #[ts(rename = "repositories")]
+    #[serde(rename = "repositories")]
+    pub repositories: Vec<Option<(String, String)>>,
 }

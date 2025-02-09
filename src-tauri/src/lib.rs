@@ -31,7 +31,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::get_organizations,
-            commands::get_projects,
+            commands::get_repositories,
             commands::get_open_pull_requests_batched,
             commands::add_organization,
             commands::remove_organization,

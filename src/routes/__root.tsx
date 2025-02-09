@@ -2,7 +2,7 @@ import { DarkModeToggle } from "../components/DarkModeToggle";
 import IconButton from "../components/button/IconButton";
 import { PrimaryButton } from "../components/button/PrimaryButton";
 import { AddOrganizationPanel } from "../components/panels/AddOrganizationPanel";
-import { GlobalProjectFilterPanel } from "../components/panels/GlobalProjectFilterPanel";
+import { GlobalRepositoriesFilterPanel } from "../components/panels/GlobalRepositoriesFilterPanel";
 import { CogIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
@@ -46,7 +46,7 @@ const Root = createRootRoute({
             <Outlet />
           </div>
         </div>
-        <GlobalProjectFilterPanel
+        <GlobalRepositoriesFilterPanel
           isOpen={isProjectFilterOpen}
           close={() => setIsProjectFilterOpen(false)}
         />

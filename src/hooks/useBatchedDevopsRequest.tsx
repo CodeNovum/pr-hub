@@ -1,7 +1,7 @@
 import { Organization } from "../bindings/core";
 import { DevOpsRequest } from "../bindings/requests";
-import { useDevOpsProjects } from "./useDevOpsProjects";
 import useOrganizations from "./useOrganizations";
+import { useRepositories } from "./useRepositories";
 import { useMemo } from "react";
 
 /**
@@ -9,31 +9,35 @@ import { useMemo } from "react";
  * Azure DevOps API requests based on the current state
  *
  * @returns {DevOpsRequest[]} The organizations to include in
- * queries, including their selected projects
+ * queries, including their selected repositories
  */
 const useBatchedDevopsRequest = (): DevOpsRequest[] => {
   const organizationsQuery = useOrganizations();
-  const projectsQuery = useDevOpsProjects();
+  const repositoriesQuery = useRepositories();
 
   const requestBody = useMemo(
     () =>
       organizationsQuery.data?.map((organization: Organization) => {
-        const organizationProjectNames =
-          projectsQuery.data
+        const repoFilter: Array<[string, string] | null> =
+          repositoriesQuery.data
             ?.filter(
-              (p) =>
+              (r) =>
                 organization?.name &&
-                p.organizationName === organization?.name &&
-                p.isActive,
+                r.project?.organizationName === organization?.name &&
+                r.isActive,
             )
-            .map((p) => p.name) ?? [];
+            .map((r) => {
+              const projectName = r.project?.name ?? "";
+              const repoName: string = r.name ?? "";
+              return [projectName, repoName];
+            }) ?? [];
         const requestModel: DevOpsRequest = {
-          projectNames: organizationProjectNames as string[],
+          repositories: repoFilter,
           organization: organization,
         };
         return requestModel;
       }),
-    [organizationsQuery.data, projectsQuery.data],
+    [organizationsQuery.data, repositoriesQuery.data],
   );
 
   return requestBody ?? [];
