@@ -2,7 +2,7 @@
 
 ## Summary
 
-A central entry point to view pull requests across repositories.
+A central entry point to view pull requests across git repositories.
 Currently this targets only the platform [Azure DevOps](https://dev.azure.com/)
 and enables viewing pull request related data across multiple organizations,
 projects and repositories.
