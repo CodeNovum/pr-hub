@@ -1,7 +1,6 @@
+use super::enums::{CommentType, PullRequestCommentThreadStatus};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-
-use super::enums::{CommentType, PullRequestCommentThreadStatus};
 
 /// https://learn.microsoft.com/en-us/rest/api/azure/devops/git/pull-request-threads/list?view=azure-devops-rest-6.0&tabs=HTTP#comment
 #[derive(Serialize, Deserialize, Debug, Default)]
