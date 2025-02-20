@@ -1,4 +1,4 @@
-import { COMMAND_ADD_ORGANIZATION } from "../constants";
+import { COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION } from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -38,9 +38,9 @@ const useAddOrganizationMutation = (): UseMutationResult<
       personalAccessTokenValue,
     }: IMutationFunctionParams) => {
       try {
-        await invoke(COMMAND_ADD_ORGANIZATION, {
-          orgaName: organizationName,
-          patValue: personalAccessTokenValue,
+        await invoke(COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION, {
+          organizationName: organizationName,
+          pat: personalAccessTokenValue,
         });
         updateGlobalNotificationMessage({
           message: "Added DevOps organization",

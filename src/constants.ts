@@ -1,7 +1,8 @@
 const ACTIVE_REPOS_LOCAL_STORAGE_KEY = "selected-repository-ids";
 
 const COMMAND_GET_ORGANIZATIONS = "get_organizations";
-const COMMAND_ADD_ORGANIZATION = "add_organization";
+const COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION =
+  "import_azure_devops_organization_repositories";
 const COMMAND_REMOVE_ORGANIZATION = "remove_organization";
 const COMMAND_UPDATE_PAT = "update_pat";
 const COMMAND_GET_REPOSITORIES = "get_repositories";
@@ -13,6 +14,6 @@ export {
   COMMAND_GET_REPOSITORIES,
   COMMAND_UPDATE_PAT,
   COMMAND_REMOVE_ORGANIZATION,
-  COMMAND_ADD_ORGANIZATION,
+  COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION,
   COMMAND_GET_ORGANIZATIONS,
 };
