@@ -12,6 +12,7 @@ impl TauriApp {
     pub fn run() {
         tauri::Builder::default()
             .plugin(tauri_plugin_shell::init())
+            .plugin(tauri_plugin_log::Builder::new().build())
             .setup(|app| {
                 let di_container = DependencyContainer::new();
                 app.manage(di_container);

@@ -12,7 +12,7 @@ pub trait Factory<T>: Send + Sync {
     ///
     /// # Arguments
     ///
-    /// * `di_container` - The dependency container to resolve eventual instance dependencies
+    /// * `di_container` - The dependency container to resolve dependencies
     fn produce(&self, di_container: &DependencyContainer) -> T;
 }
 

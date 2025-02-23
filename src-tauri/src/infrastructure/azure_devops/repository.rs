@@ -128,8 +128,11 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
         while let Some(res) = join_set.join_next().await {
             match res {
                 Ok(x) => result.extend(x?),
-                Err(_) => {
-                    // TODO: Logging
+                Err(err) => {
+                    log::info!(
+                        "Error getting Azure DevOps git repository: {:?}",
+                        err.to_string()
+                    );
                 }
             }
         }
