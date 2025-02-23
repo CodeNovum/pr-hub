@@ -4,7 +4,10 @@ use super::models::{
 };
 use crate::{
     application::traits::AzureDevOpsRepository,
-    domain::models::{GitRepository, PullRequest},
+    domain::{
+        enums::GitProvider,
+        models::{GitRepository, PullRequest},
+    },
 };
 use anyhow::Result;
 use async_trait::async_trait;
@@ -117,6 +120,7 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
                     .map(|x| GitRepository {
                         name: x.name.to_string(),
                         context: format!("{}/{}", organization_name, project_name),
+                        git_provider: GitProvider::AzureDevOps,
                         is_active: true,
                     })
                     .collect::<Vec<GitRepository>>();

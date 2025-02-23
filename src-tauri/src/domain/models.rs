@@ -1,5 +1,7 @@
 use chrono::{DateTime, Utc};
 
+use super::enums::GitProvider;
+
 /// Represents a single git repository
 #[derive(Debug)]
 pub struct GitRepository {
@@ -9,6 +11,8 @@ pub struct GitRepository {
     /// the remote. This is vendor specific and varies between
     /// different git providers.
     pub context: String,
+    /// The git provider where the repository is stored
+    pub git_provider: GitProvider,
     /// When marked as active, the repository will be included when
     /// querying data to fulfill the applications purpose
     pub is_active: bool,
