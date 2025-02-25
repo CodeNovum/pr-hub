@@ -1,5 +1,7 @@
-import { Organization } from "../bindings/core";
-import { COMMAND_UPDATE_PAT } from "../constants";
+import {
+  COMMAND_UPDATE_PAT,
+  RQ_KEY_IMPORTED_GIT_REPOSITORIES,
+} from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -8,20 +10,25 @@ import {
 } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
+interface IMutationParams {
+  id: number;
+  pat: string;
+}
+
 /**
  * Hook to update the PAT for an existing imported 
- * organization
+ * git repository
  *
  * @returns {UseMutationResult<
  void,
  null,
- Organization
+ IMutationParams
 >} The mutation result
  */
 const useUpdatePatMutation = (): UseMutationResult<
   void,
   null,
-  Organization
+  IMutationParams
 > => {
   const queryClient = useQueryClient();
 
@@ -30,11 +37,11 @@ const useUpdatePatMutation = (): UseMutationResult<
   );
 
   return useMutation({
-    mutationFn: async (organization: Organization) => {
+    mutationFn: async (mutationVars: IMutationParams) => {
       try {
         await invoke(COMMAND_UPDATE_PAT, {
-          id: organization.id,
-          patValue: organization.pat,
+          id: mutationVars.id,
+          pat: mutationVars.pat,
         });
         updateGlobalNotificationMessage({
           message: "Updated the Personal Access Token",
@@ -48,10 +55,10 @@ const useUpdatePatMutation = (): UseMutationResult<
         });
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-organizations"] });
-      queryClient.invalidateQueries({ queryKey: ["devops-projects"] });
-    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: [RQ_KEY_IMPORTED_GIT_REPOSITORIES],
+      }),
   });
 };
 

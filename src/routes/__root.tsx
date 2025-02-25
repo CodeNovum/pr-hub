@@ -1,16 +1,12 @@
 import { DarkModeToggle } from "../components/DarkModeToggle";
-import IconButton from "../components/button/IconButton";
 import { PrimaryButton } from "../components/button/PrimaryButton";
-import { AddOrganizationPanel } from "../components/panels/AddOrganizationPanel";
-import { GlobalRepositoriesFilterPanel } from "../components/panels/GlobalRepositoriesFilterPanel";
-import { CogIcon } from "@heroicons/react/24/outline";
+import { AddAzureDevOpsOrganizationPanel } from "../components/panels/AddAzureDevOpsOrganizationPanel";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 const Root = createRootRoute({
   component: () => {
-    const [isProjectFilterOpen, setIsProjectFilterOpen] = useState(false);
     const [isCreatePanelOpen, setIsCreatePanelOpen] = useState(false);
 
     return (
@@ -21,8 +17,8 @@ const Root = createRootRoute({
               <Link to="/" className="[&.active]:font-bold">
                 Pull Requests
               </Link>{" "}
-              <Link to="/organizations" className="[&.active]:font-bold">
-                Organizations
+              <Link to="/repositories" className="[&.active]:font-bold">
+                Repositories
               </Link>
             </div>
             <div className="flex items-center justify-center">
@@ -34,10 +30,6 @@ const Root = createRootRoute({
               />
             </div>
             <div className="flex items-center justify-end gap-2">
-              <IconButton
-                icon={<CogIcon className="h-5 w-5" />}
-                onClick={() => setIsProjectFilterOpen(true)}
-              />
               <DarkModeToggle />
             </div>
           </div>
@@ -46,11 +38,7 @@ const Root = createRootRoute({
             <Outlet />
           </div>
         </div>
-        <GlobalRepositoriesFilterPanel
-          isOpen={isProjectFilterOpen}
-          close={() => setIsProjectFilterOpen(false)}
-        />
-        <AddOrganizationPanel
+        <AddAzureDevOpsOrganizationPanel
           isOpen={isCreatePanelOpen}
           close={() => setIsCreatePanelOpen(false)}
         />

@@ -1,21 +1,24 @@
-import { useAddOrganizationMutation } from "../../hooks/useAddOrganizationMutation";
+import { useAddAzureDevOpsOrganizationMutation } from "../../hooks/useAddAzureDevOpsOrganizationMutation";
 import { Input } from "../Input";
 import { Panel } from "../Panel";
 import { Stack } from "../Stack";
 import { PrimaryButton } from "../button/PrimaryButton";
 import { useCallback, useMemo, useState } from "react";
 
-interface IAddOrganizationPanelProps {
+interface IAddAzureDevOpsOrganizationPanelProps {
   isOpen: boolean;
   close: () => void;
 }
 
 /**
- * Specialized panel that enables the user to import a new
- * organization and the corresponding PAT
+ * Specialized panel that enables the user to import all
+ * git repositories from an Azure DevOps organization
+ * and the corresponding PAT
  */
-const AddOrganizationPanel = (props: IAddOrganizationPanelProps) => {
-  const addOrganizationMutation = useAddOrganizationMutation();
+const AddAzureDevOpsOrganizationPanel = (
+  props: IAddAzureDevOpsOrganizationPanelProps,
+) => {
+  const addOrganizationMutation = useAddAzureDevOpsOrganizationMutation();
 
   const [organizationName, setOrganizationName] = useState<string>("");
   const [personalAccessToken, setPersonalAccessToken] = useState<string>("");
@@ -96,5 +99,5 @@ const AddOrganizationPanel = (props: IAddOrganizationPanelProps) => {
   );
 };
 
-export type { IAddOrganizationPanelProps };
-export { AddOrganizationPanel };
+export type { IAddAzureDevOpsOrganizationPanelProps };
+export { AddAzureDevOpsOrganizationPanel };

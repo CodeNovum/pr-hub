@@ -1,4 +1,7 @@
-import { COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION } from "../constants";
+import {
+  COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION,
+  RQ_KEY_IMPORTED_GIT_REPOSITORIES,
+} from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -21,7 +24,7 @@ interface IMutationFunctionParams {
  IMutationFunctionParams
 >} The result of the mutation
  */
-const useAddOrganizationMutation = (): UseMutationResult<
+const useAddAzureDevOpsOrganizationMutation = (): UseMutationResult<
   void,
   null,
   IMutationFunctionParams
@@ -55,12 +58,12 @@ const useAddOrganizationMutation = (): UseMutationResult<
       }
     },
     onSettled: () => {
-      // Ensure that the query that fetches the organizations is invalidated.
-      queryClient.invalidateQueries({ queryKey: ["user-organizations"] });
-      queryClient.invalidateQueries({ queryKey: ["devops-projects"] });
+      queryClient.invalidateQueries({
+        queryKey: [RQ_KEY_IMPORTED_GIT_REPOSITORIES],
+      });
     },
   });
 };
 
 export type { IMutationFunctionParams };
-export { useAddOrganizationMutation };
+export { useAddAzureDevOpsOrganizationMutation };

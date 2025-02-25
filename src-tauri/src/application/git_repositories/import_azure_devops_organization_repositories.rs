@@ -1,9 +1,14 @@
-use crate::application::traits::AzureDevOpsRepository;
+use crate::application::traits::{
+    AzureDevOpsRepository, GitRepositoryRepository, SecretRepository,
+};
+use anyhow::Result;
 
 /// Responsible for importing all git repositories from a single
 /// Azure DevOps organization
 pub struct DevOpsOrgaImporter {
     azure_devops_repository: Box<dyn AzureDevOpsRepository>,
+    git_repository_repository: Box<dyn GitRepositoryRepository>,
+    secret_repository: Box<dyn SecretRepository>,
 }
 
 impl DevOpsOrgaImporter {
@@ -11,10 +16,18 @@ impl DevOpsOrgaImporter {
     ///
     /// # Arguments
     ///
-    /// * `azure_devops_repository` - The repository to get the git repositories
-    pub fn new(azure_devops_repository: Box<dyn AzureDevOpsRepository>) -> Self {
+    /// * `azure_devops_repository` - The repository to get the git repositories from Azure DevOps
+    /// * `git_repository_repository` - The repository to access git repositories
+    /// * `secret_repository` - The repository to access secrets
+    pub fn new(
+        azure_devops_repository: Box<dyn AzureDevOpsRepository>,
+        git_repository_repository: Box<dyn GitRepositoryRepository>,
+        secret_repository: Box<dyn SecretRepository>,
+    ) -> Self {
         Self {
             azure_devops_repository,
+            git_repository_repository,
+            secret_repository,
         }
     }
 
@@ -26,14 +39,23 @@ impl DevOpsOrgaImporter {
     ///
     /// * `organization_name` - The name of the Azure DevOps organization
     /// * `pat` - The PAT to access all git repositories
-    pub async fn import(&self, organization_name: &str, pat: &str) {
-        let _git_repositories = self
+    pub async fn import(&self, organization_name: &str, pat: &str) -> Result<()> {
+        let git_repositories = self
             .azure_devops_repository
             .get_repositories_in_organization(pat, organization_name)
-            .await;
-        println!("{:?}", _git_repositories);
-        // TODO: Store the repos in the database
-        // TODO: Store the pat in the secret store
-        println!("Hello");
+            .await?;
+        if let Some(first) = git_repositories.first() {
+            // When importing a whole organization, all repositories share the same
+            // PAT and therefore only one secret needs to be stored
+            self.secret_repository
+                .set_secret(&first.pat_secret_key, pat)?;
+            // Store all the repositories after the secret is created
+            for gr in git_repositories {
+                self.git_repository_repository
+                    .create_git_repository(gr)
+                    .await?;
+            }
+        }
+        Ok(())
     }
 }

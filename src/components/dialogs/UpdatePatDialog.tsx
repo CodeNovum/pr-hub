@@ -1,4 +1,4 @@
-import { Organization } from "../../bindings/core";
+import { GitRepositoryDto } from "../../bindings";
 import { useUpdatePatMutation } from "../../hooks/useUpdatePatMutation";
 import { Input } from "../Input";
 import { Stack } from "../Stack";
@@ -8,12 +8,12 @@ import { useState } from "react";
 interface IUpdatePatDialogProps {
   isOpen: boolean;
   close: () => void;
-  organization?: Organization;
+  gitRepository?: GitRepositoryDto;
 }
 
 /**
  * Specialized dialog for the user to update the PAT of a
- * single imported organization
+ * single imported git repository
  */
 const UpdatePatDialog = (props: IUpdatePatDialogProps) => {
   const updatePatMutation = useUpdatePatMutation();
@@ -33,18 +33,19 @@ const UpdatePatDialog = (props: IUpdatePatDialogProps) => {
       isBlocking
       isBusy={updatePatMutation.isPending}
       onConfirm={async () => {
-        if (!props.organization) {
+        if (!props.gitRepository) {
           return;
         }
-        const updatedOrganization = { ...props.organization };
-        updatedOrganization.pat = patValue;
-        await updatePatMutation.mutateAsync(updatedOrganization);
+        await updatePatMutation.mutateAsync({
+          id: props.gitRepository.id,
+          pat: patValue,
+        });
         closeDialog();
       }}
     >
       <Stack>
         <p>
-          Update Personal Access Token for the currently selected organization
+          Update Personal Access Token for the currently selected git repository
         </p>
         <Input
           label="Personal Access Token"

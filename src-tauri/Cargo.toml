@@ -32,3 +32,4 @@ reqwest = "0.12.12"
 tokio = "1.43.0"
 tauri-plugin-log = "2.2.1"
 log = "0.4.26"
+sqlx = { version = "0.8.3", features = ["runtime-tokio", "sqlite"] }

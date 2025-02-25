@@ -1,1 +1,5 @@
+pub mod get_git_repositories;
 pub mod import_azure_devops_organization_repositories;
+pub mod remove_git_repository;
+pub mod toggle_git_repository_active_state;
+pub mod update_pat_for_git_repository;

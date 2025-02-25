@@ -1,4 +1,7 @@
-import { COMMAND_REMOVE_ORGANIZATION } from "../constants";
+import {
+  COMMAND_REMOVE_REPOSITORY,
+  RQ_KEY_IMPORTED_GIT_REPOSITORIES,
+} from "../constants";
 import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
@@ -8,7 +11,7 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 
 /**
- * Hook to remove a single imported organization
+ * Hook to remove a single imported git repository 
  *
  * @returns {UseMutationResult<
  void,
@@ -16,7 +19,7 @@ import { invoke } from "@tauri-apps/api/core";
  number
 >} The mutation result
  */
-const useRemoveOrganizationMutation = (): UseMutationResult<
+const useRemoveGitRepositoryMutation = (): UseMutationResult<
   void,
   null,
   number
@@ -28,27 +31,26 @@ const useRemoveOrganizationMutation = (): UseMutationResult<
   );
 
   return useMutation({
-    mutationFn: async (organizationId: number) => {
+    mutationFn: async (gitRepositoryId: number) => {
       try {
-        await invoke(COMMAND_REMOVE_ORGANIZATION, { id: organizationId });
+        await invoke(COMMAND_REMOVE_REPOSITORY, { id: gitRepositoryId });
         updateGlobalNotificationMessage({
-          message: "Organization was removed",
+          message: "Repository was removed",
           type: "Success",
         });
       } catch (error) {
         console.error(error);
         updateGlobalNotificationMessage({
-          message: "Organization could not be removed",
+          message: "Repository could not be removed",
           type: "Error",
         });
       }
     },
-    onSettled: () => {
-      // Ensure that the query that fetches the organizations is invalidated.
-      queryClient.invalidateQueries({ queryKey: ["user-organizations"] });
-      queryClient.invalidateQueries({ queryKey: ["devops-projects"] });
-    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: [RQ_KEY_IMPORTED_GIT_REPOSITORIES],
+      }),
   });
 };
 
-export { useRemoveOrganizationMutation };
+export { useRemoveGitRepositoryMutation };

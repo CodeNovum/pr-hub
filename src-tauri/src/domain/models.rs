@@ -1,10 +1,11 @@
-use chrono::{DateTime, Utc};
-
 use super::enums::GitProvider;
+use chrono::{DateTime, Utc};
 
 /// Represents a single git repository
 #[derive(Debug)]
 pub struct GitRepository {
+    /// The unique identifier
+    pub id: u32,
     /// The repository name
     pub name: String,
     /// The context in that the git repository can be accessed on
@@ -16,6 +17,9 @@ pub struct GitRepository {
     /// When marked as active, the repository will be included when
     /// querying data to fulfill the applications purpose
     pub is_active: bool,
+    /// The key to retrieve the PAT to use for this git repository
+    /// from the secret storage
+    pub pat_secret_key: String,
 }
 
 /// Represents a single pull request within a git repository

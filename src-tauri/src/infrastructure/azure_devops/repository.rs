@@ -118,10 +118,12 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
                     .value
                     .iter()
                     .map(|x| GitRepository {
+                        id: 0,
                         name: x.name.to_string(),
                         context: format!("{}/{}", organization_name, project_name),
                         git_provider: GitProvider::AzureDevOps,
                         is_active: true,
+                        pat_secret_key: format!("azuredevops-{}", organization_name),
                     })
                     .collect::<Vec<GitRepository>>();
                 Ok(result)

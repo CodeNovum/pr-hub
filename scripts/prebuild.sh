@@ -2,10 +2,7 @@
 
 # Define bindings directories
 BINDINGS_DIRS=(
-  "src/bindings/core"
-  "src/bindings/devops"
-  "src/bindings/requests"
-  "src/bindings/responses"
+  "src/bindings"
 )
 
 # Function to generate index files
