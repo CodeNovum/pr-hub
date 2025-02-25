@@ -1,6 +1,6 @@
 use super::dependency_container::DependencyContainer;
 use crate::application::{
-    dtos::GitRepositoryDto,
+    dtos::{GitRepositoryDto, PullRequestDto},
     git_repositories::{
         get_git_repositories::GitRepositoriesQuery,
         import_azure_devops_organization_repositories::DevOpsOrgaImporter,
@@ -8,6 +8,7 @@ use crate::application::{
         toggle_git_repository_active_state::ToggleGitRepositoryActiveStateCommand,
         update_pat_for_git_repository::UpdatePatForGitRepositoryCommand,
     },
+    pull_requests::get_open_pull_requests::GetOpenPullRequestsQuery,
 };
 use tauri::State;
 
@@ -166,13 +167,35 @@ pub async fn update_pat_for_git_repository(
     }
 }
 
+/// Tauri command to get all open pull requests across active imported
+/// git repositories
+///
+/// # Arguments
+///
+/// * `di_container` - The container to resolve dependencies
+///
+/// # Errors
+///
+/// Any errors that might occur as string message
 #[tauri::command]
 pub async fn get_open_pull_requests(
     di_container: State<'_, DependencyContainer>,
-) -> Result<(), String> {
-    let _service = di_container
+) -> Result<Vec<PullRequestDto>, String> {
+    let azure_devops_repository = di_container
         .azure_devops_repository_fac
         .produce(&di_container);
-    // TODO: implement
-    Ok(())
+    let git_repository_repository = di_container
+        .git_repository_repository_fac
+        .produce(&di_container);
+    let secret_repository = di_container.secret_repository_fac.produce(&di_container);
+    let query = GetOpenPullRequestsQuery::new(
+        azure_devops_repository,
+        git_repository_repository,
+        secret_repository,
+    );
+    let result = query.execute().await;
+    match result {
+        Ok(data) => Ok(data),
+        Err(err) => Err(err.to_string()),
+    }
 }

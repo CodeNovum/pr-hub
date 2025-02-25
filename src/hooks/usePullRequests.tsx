@@ -1,33 +1,28 @@
-import { PullRequest } from "../bindings/devops";
+import { PullRequestDto } from "../bindings";
 import { COMMAND_GET_OPEN_PULL_REQUESTS } from "../constants";
 import { useStoreActions } from "../store/store";
-import { useBatchedDevopsRequest } from "./useBatchedDevopsRequest";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
 
 /**
- * Hook to retrieve all pull requests across imported organization
+ * Hook to retrieve all pull requests across imported git repositories
  * based on the current filters
  *
- * @returns {UseQueryResult<PullRequest[]>} The query result
+ * @returns {UseQueryResult<PullRequestDto[]>} The query result
  */
-const usePullRequests = (): UseQueryResult<PullRequest[]> => {
-  const requestBody = useBatchedDevopsRequest();
+const usePullRequests = (): UseQueryResult<PullRequestDto[]> => {
   const updateGlobalNotificationMessage = useStoreActions(
     (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
   );
 
   return useQuery({
-    queryKey: ["pullRequests", requestBody],
+    queryKey: ["pull-requests"],
     queryFn: async () => {
       try {
-        if (requestBody && requestBody.length > 0) {
-          const result = await invoke(COMMAND_GET_OPEN_PULL_REQUESTS, {
-            requestModels: requestBody,
-          });
-          return result;
-        }
-        return [];
+        const result = await invoke<PullRequestDto[]>(
+          COMMAND_GET_OPEN_PULL_REQUESTS,
+        );
+        return result;
       } catch (error) {
         console.error(error);
         updateGlobalNotificationMessage({

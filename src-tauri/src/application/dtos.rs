@@ -1,4 +1,7 @@
-use crate::domain::{enums::GitProvider as DomainGitProvider, models::GitRepository};
+use crate::domain::{
+    enums::GitProvider as DomainGitProvider,
+    models::{GitRepository, PullRequest},
+};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use ts_rs::TS;
@@ -66,4 +69,18 @@ pub struct PullRequestDto {
     #[ts(rename = "numberOfClosedComments")]
     #[serde(rename = "numberOfClosedComments")]
     pub number_of_closed_comments: u16,
+}
+
+impl From<&PullRequest> for PullRequestDto {
+    fn from(value: &PullRequest) -> Self {
+        Self {
+            repository_name: value.repository_name.to_string(),
+            title: value.title.to_string(),
+            merge_status: value.merge_status.to_string(),
+            creator_name: value.creator_name.to_string(),
+            creation_date: value.creation_date,
+            number_of_closed_comments: value.number_of_closed_comments,
+            number_of_comments: value.number_of_comments,
+        }
+    }
 }
