@@ -25,7 +25,7 @@ const Root = createRootRoute({
               <PrimaryButton
                 outlined
                 icon={<PlusIcon className="h-5 w-5" />}
-                text={"DevOps organization"}
+                text={"Azure DevOps organization"}
                 onClick={() => setIsCreatePanelOpen(true)}
               />
             </div>

@@ -14,13 +14,23 @@ use tokio::task::JoinSet;
 
 /// Responsible for getting all open pull requests across all
 /// imported git repositories
-pub struct GetOpenPullRequestsQuery {
-    azure_devops_repository: Arc<Box<dyn AzureDevOpsRepository>>,
-    git_repository_repository: Box<dyn GitRepositoryRepository>,
-    secret_repository: Box<dyn SecretRepository>,
+pub struct GetOpenPullRequestsQuery<A, G, S>
+where
+    A: AzureDevOpsRepository,
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
+    azure_devops_repository: Arc<A>,
+    git_repository_repository: G,
+    secret_repository: S,
 }
 
-impl GetOpenPullRequestsQuery {
+impl<A, G, S> GetOpenPullRequestsQuery<A, G, S>
+where
+    A: AzureDevOpsRepository + 'static,
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
     /// Create a new instance of the query
     ///
     /// # Arguments
@@ -29,9 +39,9 @@ impl GetOpenPullRequestsQuery {
     /// * `git_repository_repository` - The repository to get imported git repositories
     /// * `secret_repository` - The repositories to get secrets
     pub fn new(
-        azure_devops_repository: Box<dyn AzureDevOpsRepository>,
-        git_repository_repository: Box<dyn GitRepositoryRepository>,
-        secret_repository: Box<dyn SecretRepository>,
+        azure_devops_repository: A,
+        git_repository_repository: G,
+        secret_repository: S,
     ) -> Self {
         Self {
             azure_devops_repository: Arc::new(azure_devops_repository),

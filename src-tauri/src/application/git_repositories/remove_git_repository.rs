@@ -2,22 +2,27 @@ use crate::application::traits::{GitRepositoryRepository, SecretRepository};
 use anyhow::Result;
 
 /// Responsible for removing an imported git repository
-pub struct RemoveGitRepositoryCommand {
-    git_repository_repository: Box<dyn GitRepositoryRepository>,
-    secret_repository: Box<dyn SecretRepository>,
+pub struct RemoveGitRepositoryCommand<G, S>
+where
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
+    git_repository_repository: G,
+    secret_repository: S,
 }
 
-impl RemoveGitRepositoryCommand {
+impl<G, S> RemoveGitRepositoryCommand<G, S>
+where
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
     /// Create a new instance of the command
     ///
     /// # Arguments
     ///
     /// * `git_repository_repository` - The repository to access git repositories
     /// * `secret_repository` - The repository to access secrets
-    pub fn new(
-        git_repository_repository: Box<dyn GitRepositoryRepository>,
-        secret_repository: Box<dyn SecretRepository>,
-    ) -> Self {
+    pub fn new(git_repository_repository: G, secret_repository: S) -> Self {
         Self {
             git_repository_repository,
             secret_repository,

@@ -1,68 +1,34 @@
-use crate::{
-    application::traits::{AzureDevOpsRepository, GitRepositoryRepository, SecretRepository},
-    infrastructure::{
-        azure_devops::repository::AzureDevOpsRestRepository,
-        database::{connection::PrHubDatabase, repositories::GitRepositoryDatabaseRepository},
-        secret_storage::KeyringRepository,
-    },
+use crate::infrastructure::{
+    azure_devops::repository::AzureDevOpsRestRepository,
+    database::{connection::init_db_connection, repositories::GitRepositoryDatabaseRepository},
+    secret_storage::KeyringRepository,
 };
+use sqlx::SqlitePool;
 use std::sync::Arc;
-
-/// Must be implemented by factories that are being used to resolve transient dependencies
-pub trait Factory<T>: Send + Sync {
-    /// Produce a new instance of the given type
-    ///
-    /// # Arguments
-    ///
-    /// * `di_container` - The dependency container to resolve dependencies
-    fn produce(&self, di_container: &DependencyContainer) -> T;
-}
-
-/// Factory responsible for producing git repository repositories
-struct GitRepositoryRepositoryFac;
-
-impl Factory<Box<dyn GitRepositoryRepository>> for GitRepositoryRepositoryFac {
-    fn produce(&self, di_container: &DependencyContainer) -> Box<dyn GitRepositoryRepository> {
-        Box::new(GitRepositoryDatabaseRepository::new(Arc::clone(
-            &di_container.database_access,
-        )))
-    }
-}
-
-/// Factory responsible for Azure DevOps repositories
-struct AzureDevOpsRepositoryFac;
-
-impl Factory<Box<dyn AzureDevOpsRepository>> for AzureDevOpsRepositoryFac {
-    fn produce(&self, _di_container: &DependencyContainer) -> Box<dyn AzureDevOpsRepository> {
-        Box::new(AzureDevOpsRestRepository::default())
-    }
-}
-
-/// Factory responsible for secret repositories
-struct SecretRepositoryFac;
-
-impl Factory<Box<dyn SecretRepository>> for SecretRepositoryFac {
-    fn produce(&self, _di_container: &DependencyContainer) -> Box<dyn SecretRepository> {
-        Box::new(KeyringRepository::new("pr-hub".to_string()))
-    }
-}
 
 /// Container that manages how dependencies are resolved
 pub struct DependencyContainer {
-    pub database_access: Arc<PrHubDatabase>,
-    pub git_repository_repository_fac: Box<dyn Factory<Box<dyn GitRepositoryRepository>>>,
-    pub azure_devops_repository_fac: Box<dyn Factory<Box<dyn AzureDevOpsRepository>>>,
-    pub secret_repository_fac: Box<dyn Factory<Box<dyn SecretRepository>>>,
+    pub database_connection_pool: Arc<SqlitePool>,
+    pub git_repository_repository_fac: fn(&Self) -> GitRepositoryDatabaseRepository,
+    pub azure_devops_repository_fac: fn() -> AzureDevOpsRestRepository,
+    pub secret_repository_fac: fn() -> KeyringRepository,
 }
 
 impl DependencyContainer {
     pub fn new(app_data_dir_path: &str) -> Self {
-        let database_access = Arc::new(PrHubDatabase::new(app_data_dir_path));
+        let database_connection_pool = tokio::runtime::Runtime::new()
+            .expect("Tokio runtime needs to be created for syncronously setting up the connection pool at app start")
+            .block_on(init_db_connection(app_data_dir_path))
+            .expect("Could not create a connection to the database");
         Self {
-            database_access,
-            git_repository_repository_fac: Box::new(GitRepositoryRepositoryFac {}),
-            azure_devops_repository_fac: Box::new(AzureDevOpsRepositoryFac {}),
-            secret_repository_fac: Box::new(SecretRepositoryFac {}),
+            database_connection_pool: Arc::new(database_connection_pool),
+            git_repository_repository_fac: |di_container| {
+                GitRepositoryDatabaseRepository::new(Arc::clone(
+                    &di_container.database_connection_pool,
+                ))
+            },
+            azure_devops_repository_fac: || AzureDevOpsRestRepository::default(),
+            secret_repository_fac: || KeyringRepository::new("pr-hub".to_string()),
         }
     }
 }

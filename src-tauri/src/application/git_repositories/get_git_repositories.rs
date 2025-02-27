@@ -2,17 +2,23 @@ use crate::application::{dtos::GitRepositoryDto, traits::GitRepositoryRepository
 use anyhow::Result;
 
 /// Responsible for getting all imported git repositories
-pub struct GitRepositoriesQuery {
-    git_repository_repository: Box<dyn GitRepositoryRepository>,
+pub struct GitRepositoriesQuery<G>
+where
+    G: GitRepositoryRepository,
+{
+    git_repository_repository: G,
 }
 
-impl GitRepositoriesQuery {
+impl<G> GitRepositoriesQuery<G>
+where
+    G: GitRepositoryRepository,
+{
     /// Create a new instance of the query
     ///
     /// # Arguments
     ///
     /// * `git_repository_repository` - The repository to for git repositories access
-    pub fn new(git_repository_repository: Box<dyn GitRepositoryRepository>) -> Self {
+    pub fn new(git_repository_repository: G) -> Self {
         Self {
             git_repository_repository,
         }

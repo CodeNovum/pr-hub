@@ -1,12 +1,13 @@
-use super::{connection::PrHubDatabase, daos::GitRepositoryDao};
+use super::daos::GitRepositoryDao;
 use crate::{application::traits::GitRepositoryRepository, domain::models::GitRepository};
 use anyhow::Result;
 use async_trait::async_trait;
+use sqlx::SqlitePool;
 use std::sync::Arc;
 
 /// Repository to access the git repositories, stored in the database
 pub struct GitRepositoryDatabaseRepository {
-    database_access: Arc<PrHubDatabase>,
+    database_access: Arc<SqlitePool>,
 }
 
 impl GitRepositoryDatabaseRepository {
@@ -15,7 +16,7 @@ impl GitRepositoryDatabaseRepository {
     /// # Arguments
     ///
     /// * `database_access` - Access to the target database
-    pub fn new(database_access: Arc<PrHubDatabase>) -> Self {
+    pub fn new(database_access: Arc<SqlitePool>) -> Self {
         Self { database_access }
     }
 }
@@ -29,7 +30,7 @@ impl GitRepositoryRepository for GitRepositoryDatabaseRepository {
                     FROM git_repositories
             "#,
         )
-        .fetch_all(self.database_access.get_pool())
+        .fetch_all(&*self.database_access)
         .await?;
         let result = git_repositories.iter().map(|x| x.into()).collect();
         Ok(result)
@@ -44,7 +45,7 @@ impl GitRepositoryRepository for GitRepositoryDatabaseRepository {
             "#,
         )
         .bind(id)
-        .fetch_one(self.database_access.get_pool())
+        .fetch_one(&*self.database_access)
         .await?;
         let result = git_repo.into();
         Ok(result)
@@ -64,7 +65,7 @@ impl GitRepositoryRepository for GitRepositoryDatabaseRepository {
         .bind(dao.is_active)
         .bind(dao.git_provider)
         .bind(dao.id)
-        .execute(self.database_access.get_pool())
+        .execute(&*self.database_access)
         .await?;
         Ok(())
     }
@@ -82,7 +83,7 @@ impl GitRepositoryRepository for GitRepositoryDatabaseRepository {
         .bind(dao.is_active)
         .bind(dao.git_provider)
         .bind(dao.pat_secret_key)
-        .execute(self.database_access.get_pool())
+        .execute(&*self.database_access)
         .await?;
         Ok(())
     }
@@ -95,7 +96,7 @@ impl GitRepositoryRepository for GitRepositoryDatabaseRepository {
             "#,
         )
         .bind(id)
-        .execute(self.database_access.get_pool())
+        .execute(&*self.database_access)
         .await?;
         Ok(())
     }

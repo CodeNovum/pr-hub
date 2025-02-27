@@ -1,19 +1,25 @@
 use crate::application::traits::GitRepositoryRepository;
 use anyhow::Result;
 
-/// Responsible to toggle the flag indicating whether an imported
+/// Responsible for toggling the flag indicating whether an imported
 /// git repository is considered `active` or not
-pub struct ToggleGitRepositoryActiveStateCommand {
-    git_repository_repository: Box<dyn GitRepositoryRepository>,
+pub struct ToggleGitRepositoryActiveStateCommand<G>
+where
+    G: GitRepositoryRepository,
+{
+    git_repository_repository: G,
 }
 
-impl ToggleGitRepositoryActiveStateCommand {
+impl<G> ToggleGitRepositoryActiveStateCommand<G>
+where
+    G: GitRepositoryRepository,
+{
     /// Create a new instance of the command
     ///
     /// # Arguments
     ///
     /// * `git_repository_repository` - The repository to access git repositories
-    pub fn new(git_repository_repository: Box<dyn GitRepositoryRepository>) -> Self {
+    pub fn new(git_repository_repository: G) -> Self {
         Self {
             git_repository_repository,
         }

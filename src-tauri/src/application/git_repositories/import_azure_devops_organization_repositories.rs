@@ -5,13 +5,23 @@ use anyhow::Result;
 
 /// Responsible for importing all git repositories from a single
 /// Azure DevOps organization
-pub struct DevOpsOrgaImporter {
-    azure_devops_repository: Box<dyn AzureDevOpsRepository>,
-    git_repository_repository: Box<dyn GitRepositoryRepository>,
-    secret_repository: Box<dyn SecretRepository>,
+pub struct DevOpsOrgaImporter<A, G, S>
+where
+    A: AzureDevOpsRepository,
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
+    azure_devops_repository: A,
+    git_repository_repository: G,
+    secret_repository: S,
 }
 
-impl DevOpsOrgaImporter {
+impl<A, G, S> DevOpsOrgaImporter<A, G, S>
+where
+    A: AzureDevOpsRepository,
+    G: GitRepositoryRepository,
+    S: SecretRepository,
+{
     /// Create a new instance of the importer
     ///
     /// # Arguments
@@ -20,9 +30,9 @@ impl DevOpsOrgaImporter {
     /// * `git_repository_repository` - The repository to access git repositories
     /// * `secret_repository` - The repository to access secrets
     pub fn new(
-        azure_devops_repository: Box<dyn AzureDevOpsRepository>,
-        git_repository_repository: Box<dyn GitRepositoryRepository>,
-        secret_repository: Box<dyn SecretRepository>,
+        azure_devops_repository: A,
+        git_repository_repository: G,
+        secret_repository: S,
     ) -> Self {
         Self {
             azure_devops_repository,

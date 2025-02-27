@@ -29,9 +29,7 @@ use tauri::State;
 pub async fn get_git_repositories(
     di_container: State<'_, DependencyContainer>,
 ) -> Result<Vec<GitRepositoryDto>, String> {
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let query = GitRepositoriesQuery::new(git_repository_repository);
     let result = query.execute().await;
     match result {
@@ -58,13 +56,9 @@ pub async fn import_azure_devops_organization_repositories(
     organization_name: &str,
     pat: &str,
 ) -> Result<(), String> {
-    let azure_devops_repository = di_container
-        .azure_devops_repository_fac
-        .produce(&di_container);
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
-    let secret_repository = di_container.secret_repository_fac.produce(&di_container);
+    let azure_devops_repository = (di_container.azure_devops_repository_fac)();
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
     let importer = DevOpsOrgaImporter::new(
         azure_devops_repository,
         git_repository_repository,
@@ -92,10 +86,8 @@ pub async fn remove_git_repository(
     di_container: State<'_, DependencyContainer>,
     id: u32,
 ) -> Result<(), String> {
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
-    let secret_repository = di_container.secret_repository_fac.produce(&di_container);
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
     let command = RemoveGitRepositoryCommand::new(git_repository_repository, secret_repository);
     let result = command.execute(&id).await;
     match result {
@@ -119,9 +111,7 @@ pub async fn toggle_git_repository_active_state(
     di_container: State<'_, DependencyContainer>,
     id: u32,
 ) -> Result<(), String> {
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let command = ToggleGitRepositoryActiveStateCommand::new(git_repository_repository);
     let result = command.execute(&id).await;
     match result {
@@ -147,10 +137,8 @@ pub async fn update_pat_for_git_repository(
     id: u32,
     pat: &str,
 ) -> Result<(), String> {
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
-    let secret_repository = di_container.secret_repository_fac.produce(&di_container);
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
     let command =
         UpdatePatForGitRepositoryCommand::new(git_repository_repository, secret_repository);
     let result = command.execute(&id, pat).await;
@@ -181,13 +169,9 @@ pub async fn update_pat_for_git_repository(
 pub async fn get_open_pull_requests(
     di_container: State<'_, DependencyContainer>,
 ) -> Result<Vec<PullRequestDto>, String> {
-    let azure_devops_repository = di_container
-        .azure_devops_repository_fac
-        .produce(&di_container);
-    let git_repository_repository = di_container
-        .git_repository_repository_fac
-        .produce(&di_container);
-    let secret_repository = di_container.secret_repository_fac.produce(&di_container);
+    let azure_devops_repository = (di_container.azure_devops_repository_fac)();
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
     let query = GetOpenPullRequestsQuery::new(
         azure_devops_repository,
         git_repository_repository,
