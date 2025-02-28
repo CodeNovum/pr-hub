@@ -34,6 +34,23 @@ const PullRequests = createRoute({
           enableSorting: false,
         },
         {
+          id: "resolvedComments",
+          header: "Resolved comments",
+          enableSorting: false,
+          cell: (value) => (
+            <div
+              className={
+                value.row.original.numberOfComments >
+                value.row.original.numberOfClosedComments
+                  ? "text-red-500"
+                  : "text-green-500"
+              }
+            >
+              {`${value.row.original.numberOfClosedComments} / ${value.row.original.numberOfComments}`}
+            </div>
+          ),
+        },
+        {
           id: "creator",
           header: "Creator",
           accessorKey: "creatorName",

@@ -54,7 +54,7 @@ pub struct PullRequest {
     #[serde(rename = "mergeStatus")]
     pub merge_status: String,
     #[serde(rename = "pullRequestId")]
-    pub pull_request_id: i32,
+    pub pull_request_id: u32,
     pub repository: GitRepository,
     pub reviewers: Vec<IdentityRef>,
     pub status: String,

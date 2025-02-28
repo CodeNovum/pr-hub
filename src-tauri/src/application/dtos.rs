@@ -65,10 +65,10 @@ pub struct PullRequestDto {
     pub creation_date: DateTime<Utc>,
     #[ts(rename = "numberOfComments")]
     #[serde(rename = "numberOfComments")]
-    pub number_of_comments: u16,
+    pub number_of_comments: usize,
     #[ts(rename = "numberOfClosedComments")]
     #[serde(rename = "numberOfClosedComments")]
-    pub number_of_closed_comments: u16,
+    pub number_of_closed_comments: usize,
 }
 
 impl From<&PullRequest> for PullRequestDto {

@@ -1,6 +1,9 @@
-use super::models::{
-    GitRepository as AzureDevopsGitRepository, PullRequest as AzureDevopsPullRequest, Response,
-    TeamProjectReference,
+use super::{
+    enums::{CommentType, PullRequestCommentThreadStatus},
+    models::{
+        GitRepository as AzureDevopsGitRepository, PullRequest as AzureDevopsPullRequest,
+        PullRequestCommentThread, Response, TeamProjectReference,
+    },
 };
 use crate::{
     application::traits::AzureDevOpsRepository,
@@ -53,6 +56,7 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
         context: &str,
         repository_name: &str,
     ) -> Result<Vec<PullRequest>> {
+        // Get all pull requests
         let relative_url = format!(
             "{}/_apis/git/repositories/{}/pullrequests",
             context, repository_name
@@ -63,19 +67,64 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
             &relative_url,
         )
         .await?;
-        let result = response
-            .value
-            .iter()
-            .map(|x| PullRequest {
-                repository_name: repository_name.to_string(),
-                title: x.title.to_string(),
-                merge_status: x.merge_status.to_string(),
-                creator_name: x.created_by.display_name.to_string(),
-                creation_date: x.creation_date,
-                number_of_comments: 0,
-                number_of_closed_comments: 0,
-            })
-            .collect::<Vec<PullRequest>>();
+        // Create a copy of the http client that is safe to be shared between threads
+        let http_client = Arc::new(self.http_client.clone());
+        // Get comment threads for each pull request concurrently to determine how many
+        // comments were made for the PR and how many of those are marked as done
+        let mut join_set = JoinSet::<Result<PullRequest>>::new();
+        for x in response.value {
+            let pat = pat.to_string();
+            let http_client_arc = Arc::clone(&http_client);
+            let context = context.to_string();
+            let repository = repository_name.to_string();
+            join_set.spawn(async move {
+                let relative_url = format!(
+                    "{}/_apis/git/repositories/{}/pullRequests/{}/threads",
+                    context, repository, x.pull_request_id
+                );
+                let response = perform_get_request::<Response<PullRequestCommentThread>>(
+                    &http_client_arc,
+                    &pat,
+                    &relative_url,
+                )
+                .await?;
+                let comments = response.value.iter().filter(|x| {
+                    x.comments
+                        .iter()
+                        .any(|y| y.comment_type == CommentType::Text)
+                });
+                let solved_comments = comments.clone().filter(|x| {
+                    x.status == PullRequestCommentThreadStatus::Closed
+                        || x.status == PullRequestCommentThreadStatus::Fixed
+                        || x.status == PullRequestCommentThreadStatus::WontFix
+                        || x.status == PullRequestCommentThreadStatus::ByDesign
+                });
+                let pr = PullRequest {
+                    id: x.pull_request_id,
+                    repository_name: repository.to_string(),
+                    title: x.title.to_string(),
+                    merge_status: x.merge_status.to_string(),
+                    creator_name: x.created_by.display_name.to_string(),
+                    creation_date: x.creation_date,
+                    number_of_comments: comments.count(),
+                    number_of_closed_comments: solved_comments.count(),
+                };
+                Ok(pr)
+            });
+        }
+        // Collect the results from all tasks and return all found domain models
+        let mut result = vec![];
+        while let Some(res) = join_set.join_next().await {
+            match res {
+                Ok(x) => result.push(x?),
+                Err(err) => {
+                    log::info!(
+                        "Error getting Azure DevOps git repository: {:?}",
+                        err.to_string()
+                    );
+                }
+            }
+        }
         Ok(result)
     }
 

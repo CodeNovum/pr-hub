@@ -24,6 +24,8 @@ pub struct GitRepository {
 
 /// Represents a single pull request within a git repository
 pub struct PullRequest {
+    /// The unique identifier
+    pub id: u32,
     /// The name of the associated git repository
     pub repository_name: String,
     /// The pull request title
@@ -35,8 +37,8 @@ pub struct PullRequest {
     /// The date of the pull request creation
     pub creation_date: DateTime<Utc>,
     /// The total number of reviewers comments
-    pub number_of_comments: u16,
+    pub number_of_comments: usize,
     /// The total number of closed comments
     /// (closed, resolved, etc.)
-    pub number_of_closed_comments: u16,
+    pub number_of_closed_comments: usize,
 }
