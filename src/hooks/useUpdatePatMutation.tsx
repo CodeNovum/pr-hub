@@ -2,13 +2,13 @@ import {
   COMMAND_UPDATE_PAT,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,
 } from "../constants";
-import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 interface IMutationParams {
   id: number;
@@ -32,10 +32,6 @@ const useUpdatePatMutation = (): UseMutationResult<
 > => {
   const queryClient = useQueryClient();
 
-  const updateGlobalNotificationMessage = useStoreActions(
-    (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
-  );
-
   return useMutation({
     mutationFn: async (mutationVars: IMutationParams) => {
       try {
@@ -43,16 +39,10 @@ const useUpdatePatMutation = (): UseMutationResult<
           id: mutationVars.id,
           pat: mutationVars.pat,
         });
-        updateGlobalNotificationMessage({
-          message: "Updated the Personal Access Token",
-          type: "Success",
-        });
+        toast("Updated the Personal Access Token", { type: "success" });
       } catch (error) {
         console.error(error);
-        updateGlobalNotificationMessage({
-          message: "Could not update the Personal Access Token",
-          type: "Error",
-        });
+        toast("Could not update the Personal Access Token", { type: "error" });
       }
     },
     onSettled: () =>

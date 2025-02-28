@@ -2,13 +2,13 @@ import {
   COMMAND_IMPORT_AZURE_DEVOPS_ORGANIZATION,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,
 } from "../constants";
-import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 interface IMutationFunctionParams {
   organizationName: string;
@@ -31,10 +31,6 @@ const useAddAzureDevOpsOrganizationMutation = (): UseMutationResult<
 > => {
   const queryClient = useQueryClient();
 
-  const updateGlobalNotificationMessage = useStoreActions(
-    (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
-  );
-
   return useMutation({
     mutationFn: async ({
       organizationName,
@@ -45,16 +41,10 @@ const useAddAzureDevOpsOrganizationMutation = (): UseMutationResult<
           organizationName: organizationName,
           pat: personalAccessTokenValue,
         });
-        updateGlobalNotificationMessage({
-          message: "Added DevOps organization",
-          type: "Success",
-        });
+        toast("Added DevOps organization", { type: "success" });
       } catch (error) {
         console.error(error);
-        updateGlobalNotificationMessage({
-          message: "Error while adding the DevOps organization",
-          type: "Error",
-        });
+        toast("Error while adding the DevOps organization", { type: "error" });
       }
     },
     onSettled: () => {

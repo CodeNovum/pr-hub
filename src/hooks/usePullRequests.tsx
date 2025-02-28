@@ -1,8 +1,8 @@
 import { PullRequestDto } from "../bindings";
 import { COMMAND_GET_OPEN_PULL_REQUESTS } from "../constants";
-import { useStoreActions } from "../store/store";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 /**
  * Hook to retrieve all pull requests across imported git repositories
@@ -11,10 +11,6 @@ import { invoke } from "@tauri-apps/api/core";
  * @returns {UseQueryResult<PullRequestDto[]>} The query result
  */
 const usePullRequests = (): UseQueryResult<PullRequestDto[]> => {
-  const updateGlobalNotificationMessage = useStoreActions(
-    (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
-  );
-
   return useQuery({
     queryKey: ["pull-requests"],
     queryFn: async () => {
@@ -25,10 +21,7 @@ const usePullRequests = (): UseQueryResult<PullRequestDto[]> => {
         return result;
       } catch (error) {
         console.error(error);
-        updateGlobalNotificationMessage({
-          message: "Could not retrieve pull requests",
-          type: "Error",
-        });
+        toast("Could not retrieve pull requests", { type: "error" });
         return [];
       }
     },

@@ -2,13 +2,13 @@ import {
   COMMAND_REMOVE_REPOSITORY,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,
 } from "../constants";
-import { useStoreActions } from "../store/store";
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 /**
  * Hook to remove a single imported git repository 
@@ -26,24 +26,14 @@ const useRemoveGitRepositoryMutation = (): UseMutationResult<
 > => {
   const queryClient = useQueryClient();
 
-  const updateGlobalNotificationMessage = useStoreActions(
-    (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
-  );
-
   return useMutation({
     mutationFn: async (gitRepositoryId: number) => {
       try {
         await invoke(COMMAND_REMOVE_REPOSITORY, { id: gitRepositoryId });
-        updateGlobalNotificationMessage({
-          message: "Repository was removed",
-          type: "Success",
-        });
+        toast("Repository was removed", { type: "success" });
       } catch (error) {
         console.error(error);
-        updateGlobalNotificationMessage({
-          message: "Repository could not be removed",
-          type: "Error",
-        });
+        toast("Repository could not be removed", { type: "error" });
       }
     },
     onSettled: () =>

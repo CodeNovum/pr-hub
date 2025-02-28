@@ -3,9 +3,9 @@ import {
   COMMAND_GET_REPOSITORIES,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,
 } from "../constants";
-import { useStoreActions } from "../store/store";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";
+import { toast } from "react-toastify";
 
 /**
  * Hook to retrieve the list of imported repositories
@@ -13,10 +13,6 @@ import { invoke } from "@tauri-apps/api/core";
  * @returns {UseQueryResult<GitRepositoryDta[]>} The query result
  */
 const useRepositories = (): UseQueryResult<GitRepositoryDto[]> => {
-  const updateGlobalNotificationMessage = useStoreActions(
-    (actions) => actions.ApplicationModel.updateGlobalNotificationMessage,
-  );
-
   return useQuery({
     queryKey: [RQ_KEY_IMPORTED_GIT_REPOSITORIES],
     queryFn: async () => {
@@ -27,10 +23,7 @@ const useRepositories = (): UseQueryResult<GitRepositoryDto[]> => {
         return result;
       } catch (error) {
         console.error(error);
-        updateGlobalNotificationMessage({
-          message: "Could not retrieve repositories",
-          type: "Error",
-        });
+        toast("Could not retrieve repositories", { type: "error" });
         return [];
       }
     },

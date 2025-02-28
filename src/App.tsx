@@ -2,11 +2,11 @@ import "./App.css";
 import { GitRepositories } from "./routes/GitRepositories";
 import { PullRequests } from "./routes/PullRequests";
 import { Root } from "./routes/__root";
-import { Store } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { StoreProvider } from "easy-peasy";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const routeTree = Root.addChildren([GitRepositories, PullRequests]);
 const router = createRouter({ routeTree });
@@ -28,9 +28,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
-      <StoreProvider store={Store}>
-        <RouterProvider router={router} />
-      </StoreProvider>
+      <RouterProvider router={router} />
+      <ToastContainer
+        closeButton={false}
+        closeOnClick
+        autoClose={3000}
+        transition={Slide}
+        hideProgressBar
+      />
     </QueryClientProvider>
   );
 }
