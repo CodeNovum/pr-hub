@@ -74,11 +74,7 @@ const PullRequests = createRoute({
         <Table
           isBusy={pullRequestsQuery.isLoading}
           columns={tableColumns}
-          data={pullRequestsQuery.data?.sort((a, b) =>
-            a.creationDate && b.creationDate && a.creationDate > b.creationDate
-              ? 1
-              : -1,
-          )}
+          data={pullRequestsQuery.data}
         />
       </div>
     );

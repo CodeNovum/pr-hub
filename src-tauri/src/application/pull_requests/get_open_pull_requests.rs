@@ -98,6 +98,7 @@ where
                 }
             }
         }
+        result.sort_by(|a, b| a.creation_date.cmp(&b.creation_date));
         Ok(result)
     }
 }
