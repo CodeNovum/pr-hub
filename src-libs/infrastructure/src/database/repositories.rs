@@ -1,7 +1,8 @@
 use super::daos::GitRepositoryDao;
-use crate::{application::traits::GitRepositoryRepository, domain::models::GitRepository};
 use anyhow::Result;
+use application::traits::GitRepositoryRepository;
 use async_trait::async_trait;
+use domain::models::GitRepository;
 use sqlx::SqlitePool;
 use std::sync::Arc;
 

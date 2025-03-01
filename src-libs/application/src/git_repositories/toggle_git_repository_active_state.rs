@@ -1,4 +1,4 @@
-use crate::application::traits::GitRepositoryRepository;
+use crate::traits::GitRepositoryRepository;
 use anyhow::Result;
 
 /// Responsible for toggling the flag indicating whether an imported

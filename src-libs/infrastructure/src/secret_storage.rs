@@ -1,5 +1,5 @@
-use crate::application::traits::SecretRepository;
 use anyhow::Result;
+use application::traits::SecretRepository;
 use keyring::Entry;
 
 /// Repository to access secrets using keyring

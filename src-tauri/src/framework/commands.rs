@@ -1,5 +1,5 @@
 use super::dependency_container::DependencyContainer;
-use crate::application::{
+use application::{
     dtos::{GitRepositoryDto, PullRequestDto},
     git_repositories::{
         get_git_repositories::GitRepositoriesQuery,

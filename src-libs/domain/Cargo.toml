@@ -1,0 +1,9 @@
+[package]
+name = "domain"
+version = "0.1.0"
+description = "Core datatypes and rules"
+authors = ["eugen-meissner", "robin-thoene"]
+edition = "2024"
+
+[dependencies]
+chrono = { workspace = true, features = ["serde"] }

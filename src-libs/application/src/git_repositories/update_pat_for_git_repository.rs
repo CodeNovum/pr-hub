@@ -1,4 +1,4 @@
-use crate::application::traits::{GitRepositoryRepository, SecretRepository};
+use crate::traits::{GitRepositoryRepository, SecretRepository};
 use anyhow::Result;
 
 /// Responsible for updating the stored PAT for a single imported git repository

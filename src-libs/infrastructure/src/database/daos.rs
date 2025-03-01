@@ -1,4 +1,4 @@
-use crate::domain::{enums::GitProvider as DomainGitProvider, models::GitRepository};
+use domain::{enums::GitProvider as DomainGitProvider, models::GitRepository};
 use sqlx::{FromRow, Type};
 
 #[derive(Type, Clone)]

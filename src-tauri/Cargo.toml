@@ -3,7 +3,7 @@ name = "pr-hub"
 version = "0.0.0"
 description = "A central entry point to view pull requests across git repositories."
 authors = ["eugen-meissner", "robin-thoene"]
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -18,18 +18,13 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
-tauri-plugin-shell = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-ts-rs = "6.2.1"
-base64 = "0.21.0"
-chrono = { version = "0.4.24", features = ["serde"] }
-anyhow = "1.0.75"
-keyring = "2"
-async-trait = "0.1.86"
-reqwest = "0.12.12"
-tokio = "1.43.0"
-tauri-plugin-log = "2.2.1"
-log = "0.4.26"
-sqlx = { version = "0.8.3", features = ["runtime-tokio", "sqlite"] }
+application = { path = "../src-libs/application" }
+domain = { path = "../src-libs/domain" }
+infrastructure = { path = "../src-libs/infrastructure" }
+log = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+tauri = { workspace = true }
+tauri-plugin-log = { workspace = true }
+tauri-plugin-shell = { workspace = true }
+tokio = { workspace = true }

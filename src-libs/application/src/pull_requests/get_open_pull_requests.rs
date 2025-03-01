@@ -1,14 +1,12 @@
 use crate::{
-    application::{
-        dtos::PullRequestDto,
-        traits::{AzureDevOpsRepository, GitRepositoryRepository, SecretRepository},
-    },
-    domain::{
-        enums::GitProvider,
-        models::{GitRepository, PullRequest},
-    },
+    dtos::PullRequestDto,
+    traits::{AzureDevOpsRepository, GitRepositoryRepository, SecretRepository},
 };
 use anyhow::Result;
+use domain::{
+    enums::GitProvider,
+    models::{GitRepository, PullRequest},
+};
 use std::sync::Arc;
 use tokio::task::JoinSet;
 

@@ -1,8 +1,8 @@
-use crate::domain::{
+use chrono::{DateTime, Utc};
+use domain::{
     enums::GitProvider as DomainGitProvider,
     models::{GitRepository, PullRequest},
 };
-use chrono::{DateTime, Utc};
 use serde::Serialize;
 use ts_rs::TS;
 

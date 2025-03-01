@@ -1,6 +1,6 @@
-use crate::domain::models::{GitRepository, PullRequest};
 use anyhow::Result;
 use async_trait::async_trait;
+use domain::models::{GitRepository, PullRequest};
 
 /// Must be implemented by repositories responsible
 /// for accessing git repository data

@@ -1,4 +1,4 @@
-use crate::application::{dtos::GitRepositoryDto, traits::GitRepositoryRepository};
+use crate::{dtos::GitRepositoryDto, traits::GitRepositoryRepository};
 use anyhow::Result;
 
 /// Responsible for getting all imported git repositories

@@ -1,6 +1,4 @@
-use crate::application::traits::{
-    AzureDevOpsRepository, GitRepositoryRepository, SecretRepository,
-};
+use crate::traits::{AzureDevOpsRepository, GitRepositoryRepository, SecretRepository};
 use anyhow::Result;
 
 /// Responsible for importing all git repositories from a single

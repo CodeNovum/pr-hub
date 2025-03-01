@@ -1,5 +1,5 @@
 use anyhow::Result;
-use sqlx::{migrate::MigrateDatabase, SqlitePool};
+use sqlx::{SqlitePool, migrate::MigrateDatabase};
 
 /// Initialize the connection to the sqlite database,
 /// apply pending migrations and
@@ -22,8 +22,6 @@ pub async fn init_db_connection(app_data_dir_path: &str) -> Result<SqlitePool> {
         sqlx::Sqlite::create_database(db_path).await?;
     }
     let pool = SqlitePool::connect(db_path).await?;
-    sqlx::migrate!("src/infrastructure/database/migrations")
-        .run(&pool)
-        .await?;
+    sqlx::migrate!("src/database/migrations").run(&pool).await?;
     Ok(pool)
 }

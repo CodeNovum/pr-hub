@@ -5,19 +5,17 @@ use super::{
         PullRequestCommentThread, Response, TeamProjectReference,
     },
 };
-use crate::{
-    application::traits::AzureDevOpsRepository,
-    domain::{
-        enums::GitProvider,
-        models::{GitRepository, PullRequest},
-    },
-};
 use anyhow::Result;
+use application::traits::AzureDevOpsRepository;
 use async_trait::async_trait;
 use base64::Engine;
+use domain::{
+    enums::GitProvider,
+    models::{GitRepository, PullRequest},
+};
 use reqwest::{
-    header::{HeaderMap, HeaderValue, AUTHORIZATION},
     Client,
+    header::{AUTHORIZATION, HeaderMap, HeaderValue},
 };
 use std::sync::Arc;
 use tokio::task::JoinSet;
