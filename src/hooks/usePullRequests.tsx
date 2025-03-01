@@ -1,4 +1,4 @@
-import { PullRequestDto } from "../bindings";
+import { PullRequestDto } from "../bindings/PullRequestDto";
 import { COMMAND_GET_OPEN_PULL_REQUESTS } from "../constants";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { invoke } from "@tauri-apps/api/core";

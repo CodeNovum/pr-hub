@@ -1,4 +1,4 @@
-import { GitRepositoryDto } from "../bindings";
+import { GitRepositoryDto } from "../bindings/GitRepositoryDto";
 import {
   COMMAND_GET_REPOSITORIES,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,

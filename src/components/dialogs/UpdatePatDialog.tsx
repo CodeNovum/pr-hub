@@ -1,4 +1,4 @@
-import { GitRepositoryDto } from "../../bindings";
+import { GitRepositoryDto } from "../../bindings/GitRepositoryDto";
 import { useUpdatePatMutation } from "../../hooks/useUpdatePatMutation";
 import { Input } from "../Input";
 import { Stack } from "../Stack";

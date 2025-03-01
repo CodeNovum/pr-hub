@@ -1,4 +1,4 @@
-import { GitRepositoryDto } from "../bindings";
+import { GitRepositoryDto } from "../bindings/GitRepositoryDto";
 import { Checkbox } from "../components/Checkbox";
 import Table from "../components/Table";
 import IconButton from "../components/button/IconButton";

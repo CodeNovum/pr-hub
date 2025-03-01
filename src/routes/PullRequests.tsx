@@ -1,4 +1,4 @@
-import { PullRequestDto } from "../bindings";
+import { PullRequestDto } from "../bindings/PullRequestDto";
 import Table from "../components/Table";
 import { usePullRequests } from "../hooks/usePullRequests";
 import { Root } from "./__root";

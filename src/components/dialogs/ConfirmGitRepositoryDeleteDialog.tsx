@@ -1,4 +1,4 @@
-﻿import { GitRepositoryDto } from "../../bindings";
+﻿import { GitRepositoryDto } from "../../bindings/GitRepositoryDto";
 import { useRemoveGitRepositoryMutation } from "../../hooks/useRemoveGitRepositoryMutation";
 import { BaseDialog } from "./BaseDialog";
 

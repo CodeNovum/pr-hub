@@ -108,9 +108,7 @@ jobs:
       - name: install cargo-edit
         run: cargo install cargo-edit
       - name: set new version
-        run: |
-          cd ./src-tauri
-          cargo set-version ${{ env.VERSION }}
+        run: cargo set-version ${{ env.VERSION }}
         shell: bash
       # Build for validation if the action input for release is false
       - name: build tauri app
