@@ -7,7 +7,7 @@ use serde::Serialize;
 use ts_rs::TS;
 
 #[derive(Serialize, Clone, TS)]
-#[ts(export, export_to = "../src/bindings/")]
+#[ts(export, export_to = "../../src/bindings/")]
 pub enum GitProvider {
     AzureDevOps,
 }
@@ -21,7 +21,7 @@ impl From<DomainGitProvider> for GitProvider {
 }
 
 #[derive(Serialize, TS)]
-#[ts(export, export_to = "../src/bindings/")]
+#[ts(export, export_to = "../../src/bindings/")]
 pub struct GitRepositoryDto {
     pub id: u32,
     pub name: String,
@@ -47,7 +47,7 @@ impl From<&GitRepository> for GitRepositoryDto {
 }
 
 #[derive(Serialize, TS)]
-#[ts(export, export_to = "../src/bindings/")]
+#[ts(export, export_to = "../../src/bindings/")]
 pub struct PullRequestDto {
     #[ts(rename = "repositoryName")]
     #[serde(rename = "repositoryName")]
