@@ -2,6 +2,10 @@
 members = ["src-tauri", "src-libs/*"]
 resolver = "2"
 
+[workspace.package]
+version = "0.0.0"
+authors = ["eugen-meissner", "robin-thoene"]
+
 [workspace.dependencies]
 anyhow = "1.0.75"
 async-trait = "0.1.86"

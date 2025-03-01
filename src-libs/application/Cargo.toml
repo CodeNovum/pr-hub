@@ -1,8 +1,8 @@
 [package]
 name = "application"
-version = "0.1.0"
+version.workspace = true
 description = "The application specific code for queries, commands etc. and that specifies interfaces"
-authors = ["eugen-meissner", "robin-thoene"]
+authors.workspace = true
 edition = "2024"
 
 [dependencies]

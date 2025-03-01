@@ -1,8 +1,8 @@
 [package]
 name = "infrastructure"
-version = "0.1.0"
+version.workspace = true
 description = "Access to external sources such as databases, web APIs etc."
-authors = ["eugen-meissner", "robin-thoene"]
+authors.workspace = true
 edition = "2024"
 
 [dependencies]
