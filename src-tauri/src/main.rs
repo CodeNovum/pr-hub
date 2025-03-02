@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    pr_hub_lib::framework::TauriApp::run();
+    pr_hub_lib::app::TauriApp::run();
 }

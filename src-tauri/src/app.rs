@@ -1,7 +1,5 @@
-mod commands;
-mod dependency_container;
-
-use dependency_container::DependencyContainer;
+use crate::{commands, dependency_container::DependencyContainer};
+use std::{env, str::FromStr};
 use tauri::Manager;
 
 /// The tauri application, including setup and the execution function
@@ -10,9 +8,14 @@ pub struct TauriApp {}
 impl TauriApp {
     #[cfg_attr(mobile, tauri::mobile_entry_point)]
     pub fn run() {
+        let log_env = env::var("RUST_LOG").unwrap_or("info".to_string());
         tauri::Builder::default()
             .plugin(tauri_plugin_shell::init())
-            .plugin(tauri_plugin_log::Builder::new().build())
+            .plugin(
+                tauri_plugin_log::Builder::new()
+                    .level(log::LevelFilter::from_str(&log_env).unwrap_or(log::LevelFilter::Info))
+                    .build(),
+            )
             .setup(|app| {
                 let data_dir = app
                     .path()

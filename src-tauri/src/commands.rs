@@ -29,12 +29,16 @@ use tauri::State;
 pub async fn get_git_repositories(
     di_container: State<'_, DependencyContainer>,
 ) -> Result<Vec<GitRepositoryDto>, String> {
+    log::info!("Invoking command `get_git_repositories`");
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let query = GitRepositoriesQuery::new(git_repository_repository);
     let result = query.execute().await;
     match result {
         Ok(data) => Ok(data),
-        Err(err) => Err(err.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
@@ -56,6 +60,10 @@ pub async fn import_azure_devops_organization_repositories(
     organization_name: &str,
     pat: &str,
 ) -> Result<(), String> {
+    log::info!(
+        "Invoking command `import_azure_devops_organization_repositories` with organization name `{}`",
+        organization_name
+    );
     let azure_devops_repository = (di_container.azure_devops_repository_fac)();
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let secret_repository = (di_container.secret_repository_fac)();
@@ -67,7 +75,10 @@ pub async fn import_azure_devops_organization_repositories(
     let result = importer.import(organization_name, pat).await;
     match result {
         Ok(_) => Ok(()),
-        Err(err) => Err(err.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
@@ -86,13 +97,20 @@ pub async fn remove_git_repository(
     di_container: State<'_, DependencyContainer>,
     id: u32,
 ) -> Result<(), String> {
+    log::info!(
+        "Invoking command `remove_git_repository` for git repository with id `{}`",
+        id
+    );
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let secret_repository = (di_container.secret_repository_fac)();
     let command = RemoveGitRepositoryCommand::new(git_repository_repository, secret_repository);
     let result = command.execute(&id).await;
     match result {
         Ok(_) => Ok(()),
-        Err(err) => Err(err.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
@@ -111,12 +129,19 @@ pub async fn toggle_git_repository_active_state(
     di_container: State<'_, DependencyContainer>,
     id: u32,
 ) -> Result<(), String> {
+    log::info!(
+        "Invoking command `toggle_git_repository_active_state` for git repository with id `{}`",
+        id
+    );
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let command = ToggleGitRepositoryActiveStateCommand::new(git_repository_repository);
     let result = command.execute(&id).await;
     match result {
         Ok(_) => Ok(()),
-        Err(err) => Err(err.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
@@ -137,6 +162,10 @@ pub async fn update_pat_for_git_repository(
     id: u32,
     pat: &str,
 ) -> Result<(), String> {
+    log::info!(
+        "Invoking command `update_pat_for_git_repository` for git repository with id `{}`",
+        id
+    );
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let secret_repository = (di_container.secret_repository_fac)();
     let command =
@@ -145,11 +174,7 @@ pub async fn update_pat_for_git_repository(
     match result {
         Ok(_) => Ok(()),
         Err(err) => {
-            log::error!(
-                "Failed to update PAT for git repository with id {}: {}",
-                id,
-                err.to_string()
-            );
+            log::error!("Error: {}", err.to_string());
             Err(err.to_string())
         }
     }
@@ -169,6 +194,7 @@ pub async fn update_pat_for_git_repository(
 pub async fn get_open_pull_requests(
     di_container: State<'_, DependencyContainer>,
 ) -> Result<Vec<PullRequestDto>, String> {
+    log::info!("Invoking command `get_open_pull_requests`");
     let azure_devops_repository = (di_container.azure_devops_repository_fac)();
     let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
     let secret_repository = (di_container.secret_repository_fac)();
@@ -180,6 +206,9 @@ pub async fn get_open_pull_requests(
     let result = query.execute().await;
     match result {
         Ok(data) => Ok(data),
-        Err(err) => Err(err.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
