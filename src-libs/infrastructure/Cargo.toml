@@ -1,7 +1,7 @@
 [package]
 name = "infrastructure"
 version.workspace = true
-description = "Access to external sources such as databases, web APIs etc."
+description = "Access to external sources such as databases, web APIs etc"
 authors.workspace = true
 edition = "2024"
 
