@@ -1,5 +1,5 @@
 import {
-  COMMAND_UPDATE_PAT,
+  COMMAND_REMOVE_REPOSITORY,
   RQ_KEY_IMPORTED_GIT_REPOSITORIES,
 } from "../constants";
 import {
@@ -10,39 +10,30 @@ import {
 import { invoke } from "@tauri-apps/api/core";
 import { toast } from "react-toastify";
 
-interface IMutationParams {
-  id: number;
-  pat: string;
-}
-
 /**
- * Hook to update the PAT for an existing imported 
- * git repository
+ * Hook to remove a single imported git repository 
  *
  * @returns {UseMutationResult<
  void,
  null,
- IMutationParams
+ number
 >} The mutation result
  */
-const useUpdatePatMutation = (): UseMutationResult<
+const useRemoveGitRepositoryMutation = (): UseMutationResult<
   void,
   null,
-  IMutationParams
+  number
 > => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (mutationVars: IMutationParams) => {
+    mutationFn: async (gitRepositoryId: number) => {
       try {
-        await invoke(COMMAND_UPDATE_PAT, {
-          id: mutationVars.id,
-          pat: mutationVars.pat,
-        });
-        toast("Updated the Personal Access Token", { type: "success" });
+        await invoke(COMMAND_REMOVE_REPOSITORY, { id: gitRepositoryId });
+        toast("Repository was removed", { type: "success" });
       } catch (error) {
         console.error(error);
-        toast("Could not update the Personal Access Token", { type: "error" });
+        toast("Repository could not be removed", { type: "error" });
       }
     },
     onSettled: () =>
@@ -52,4 +43,4 @@ const useUpdatePatMutation = (): UseMutationResult<
   });
 };
 
-export { useUpdatePatMutation };
+export { useRemoveGitRepositoryMutation };

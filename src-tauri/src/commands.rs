@@ -1,97 +1,214 @@
-use crate::{
-    logic,
-    model::{
-        core::organization::Organization,
-        devops::{git_repository::GitRepository, pull_request::PullRequest},
-        requests::devops_request::DevOpsRequest,
+use super::dependency_container::DependencyContainer;
+use application::{
+    dtos::{GitRepositoryDto, PullRequestDto},
+    git_repositories::{
+        get_git_repositories::GitRepositoriesQuery,
+        import_azure_devops_organization_repositories::DevOpsOrgaImporter,
+        remove_git_repository::RemoveGitRepositoryCommand,
+        toggle_git_repository_active_state::ToggleGitRepositoryActiveStateCommand,
+        update_pat_for_git_repository::UpdatePatForGitRepositoryCommand,
     },
+    pull_requests::get_open_pull_requests::GetOpenPullRequestsQuery,
 };
+use tauri::State;
 
-/// Command to retrieve the list of all organizations from the database.
+/// Tauri command to query for all imported git repositories
+///
+/// # Arguments
+///
+/// * `di_container` - The container to resolve dependencies
 ///
 /// # Returns
 ///
-/// The list of all organizations.
-#[tauri::command]
-pub async fn get_organizations() -> Vec<Organization> {
-    let organizations = logic::organizations::get_organizations(false).await;
-    organizations.unwrap_or_default()
-}
-
-/// Command to add an organization.
+/// * `Result<Vec<GitRepositoryDto>, String>` - The list of retrieved git repositories
 ///
-/// # Arguments
+/// # Errors
 ///
-/// * `orga_name` - The name of the organization to add
+/// Any errors that might occur as string message
 #[tauri::command]
-pub async fn add_organization(orga_name: String, pat_value: String) -> Result<i64, String> {
-    let result = logic::organizations::add_organization(&orga_name, &pat_value);
+pub async fn get_git_repositories(
+    di_container: State<'_, DependencyContainer>,
+) -> Result<Vec<GitRepositoryDto>, String> {
+    log::info!("Invoking command `get_git_repositories`");
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let query = GitRepositoriesQuery::new(git_repository_repository);
+    let result = query.execute().await;
     match result {
-        Ok(id) => Ok(id),
-        Err(error) => Err(error.to_string()),
+        Ok(data) => Ok(data),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
-/// Command to remove an organization.
+/// Tauri command to import all git repositories from a single Azure DevOps
+/// organization into the application
 ///
 /// # Arguments
 ///
-/// * `id` - The id of the organization to remove.
+/// * `di_container` - The container to resolve dependencies
+/// * `organization_name` - The name of the Azure DevOps organization
+/// * `pat` - The private access token to access all git repositories
+///
+/// # Errors
+///
+/// Any errors that might occur as string message
 #[tauri::command]
-pub fn remove_organization(id: i64) -> Result<(), String> {
-    let result = logic::organizations::remove_organization(&id);
+pub async fn import_azure_devops_organization_repositories(
+    di_container: State<'_, DependencyContainer>,
+    organization_name: &str,
+    pat: &str,
+) -> Result<(), String> {
+    log::info!(
+        "Invoking command `import_azure_devops_organization_repositories` with organization name `{}`",
+        organization_name
+    );
+    let azure_devops_repository = (di_container.azure_devops_repository_fac)();
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
+    let importer = DevOpsOrgaImporter::new(
+        azure_devops_repository,
+        git_repository_repository,
+        secret_repository,
+    );
+    let result = importer.import(organization_name, pat).await;
     match result {
         Ok(_) => Ok(()),
-        Err(error) => Err(error.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
-/// Command to update the PAT of an organization.
+/// Tauri command to remove a single imported git repository from the application
 ///
 /// # Arguments
 ///
-/// * `id` - The id of the organization to update the PAT for.
-/// * `pat_value` - The new PAT value.
+/// * `di_container` - The container to resolve dependencies
+/// * `id` - The unique identifier of the repository to remove
+///
+/// # Errors
+///
+/// Any errors that might occur as string message
 #[tauri::command]
-pub fn update_pat(id: i64, pat_value: &str) -> Result<(), String> {
-    let result = logic::organizations::update_pat(&id, pat_value);
+pub async fn remove_git_repository(
+    di_container: State<'_, DependencyContainer>,
+    id: u32,
+) -> Result<(), String> {
+    log::info!(
+        "Invoking command `remove_git_repository` for git repository with id `{}`",
+        id
+    );
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
+    let command = RemoveGitRepositoryCommand::new(git_repository_repository, secret_repository);
+    let result = command.execute(&id).await;
     match result {
         Ok(_) => Ok(()),
-        Err(error) => Err(error.to_string()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }
 
-/// Command to retrieve the list of all repositories from Azure DevOps the user has
-/// access to because of the imported DevOps organizations.
-///
-/// # Returns
-///
-/// The list of all repositories.
-#[tauri::command]
-pub async fn get_repositories() -> Result<Vec<GitRepository>, String> {
-    let result = logic::devops::get_repositories().await;
-    match result {
-        Ok(repositories) => Ok(repositories),
-        Err(error) => Err(error.to_string()),
-    }
-}
-
-/// Command to retrieve the list of all open pull requests.
+/// Tauri command to toggle the active state of a single imported git repository
 ///
 /// # Arguments
 ///
-/// * `request_models` - The list of DevOps request models to retrieve the open pull requests for.
+/// * `di_container` - The container to resolve dependencies
+/// * `id` - The unique identifier of the repository
 ///
-/// # Returns
+/// # Errors
 ///
-/// The list of all open pull requests.
+/// Any errors that might occur as string message
 #[tauri::command]
-pub async fn get_open_pull_requests_batched(
-    request_models: Vec<DevOpsRequest>,
-) -> Result<Vec<PullRequest>, String> {
-    let result = logic::devops::get_open_pull_requests_batched(&request_models).await;
+pub async fn toggle_git_repository_active_state(
+    di_container: State<'_, DependencyContainer>,
+    id: u32,
+) -> Result<(), String> {
+    log::info!(
+        "Invoking command `toggle_git_repository_active_state` for git repository with id `{}`",
+        id
+    );
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let command = ToggleGitRepositoryActiveStateCommand::new(git_repository_repository);
+    let result = command.execute(&id).await;
     match result {
-        Ok(pull_requests) => Ok(pull_requests),
-        Err(error) => Err(error.to_string()),
+        Ok(_) => Ok(()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
+    }
+}
+
+/// Tauri command to update the PAT of an already imported git repository
+///
+/// # Arguments
+///
+/// * `di_container` - The container to resolve dependencies
+/// * `id` - The unique identifier of the repository
+/// * `pat` - The new value for the PAT
+///
+/// # Errors
+///
+/// Any errors that might occur as string message
+#[tauri::command]
+pub async fn update_pat_for_git_repository(
+    di_container: State<'_, DependencyContainer>,
+    id: u32,
+    pat: &str,
+) -> Result<(), String> {
+    log::info!(
+        "Invoking command `update_pat_for_git_repository` for git repository with id `{}`",
+        id
+    );
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
+    let command =
+        UpdatePatForGitRepositoryCommand::new(git_repository_repository, secret_repository);
+    let result = command.execute(&id, pat).await;
+    match result {
+        Ok(_) => Ok(()),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
+    }
+}
+
+/// Tauri command to get all open pull requests across active imported
+/// git repositories
+///
+/// # Arguments
+///
+/// * `di_container` - The container to resolve dependencies
+///
+/// # Errors
+///
+/// Any errors that might occur as string message
+#[tauri::command]
+pub async fn get_open_pull_requests(
+    di_container: State<'_, DependencyContainer>,
+) -> Result<Vec<PullRequestDto>, String> {
+    log::info!("Invoking command `get_open_pull_requests`");
+    let azure_devops_repository = (di_container.azure_devops_repository_fac)();
+    let git_repository_repository = (di_container.git_repository_repository_fac)(&di_container);
+    let secret_repository = (di_container.secret_repository_fac)();
+    let query = GetOpenPullRequestsQuery::new(
+        azure_devops_repository,
+        git_repository_repository,
+        secret_repository,
+    );
+    let result = query.execute().await;
+    match result {
+        Ok(data) => Ok(data),
+        Err(err) => {
+            log::error!("Error: {}", err.to_string());
+            Err(err.to_string())
+        }
     }
 }

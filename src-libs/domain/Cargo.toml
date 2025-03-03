@@ -1,0 +1,9 @@
+[package]
+name = "domain"
+version.workspace = true
+description = "Core datatypes and rules"
+authors.workspace = true
+edition = "2024"
+
+[dependencies]
+chrono = { workspace = true, features = ["serde"] }

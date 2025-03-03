@@ -1,0 +1,20 @@
+[package]
+name = "infrastructure"
+version.workspace = true
+description = "Access to external sources such as databases, web APIs etc"
+authors.workspace = true
+edition = "2024"
+
+[dependencies]
+application = { path = "../application" }
+domain = { path = "../domain" }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+base64 = { workspace = true }
+chrono = { workspace = true }
+keyring = { workspace = true }
+log = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }

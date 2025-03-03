@@ -1,0 +1,16 @@
+[package]
+name = "application"
+version.workspace = true
+description = "The application specific code for queries, commands etc. and that specifies interfaces"
+authors.workspace = true
+edition = "2024"
+
+[dependencies]
+domain = { path = "../domain" }
+async-trait = { workspace = true }
+anyhow = { workspace = true }
+chrono = { workspace = true }
+log = { workspace = true }
+serde = { workspace = true }
+tokio = { workspace = true }
+ts-rs = { workspace = true }
