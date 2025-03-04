@@ -50,8 +50,8 @@ export const GitRepositories = createRoute({
         {
           id: "actions",
           header: "Actions",
-          minSize: 75,
-          maxSize: 75,
+          minSize: 200,
+          maxSize: 200,
           enableSorting: false,
           cell: (value) => (
             <div className="flex">
