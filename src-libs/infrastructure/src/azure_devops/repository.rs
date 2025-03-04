@@ -106,6 +106,10 @@ impl AzureDevOpsRepository for AzureDevOpsRestRepository {
                     creation_date: x.creation_date,
                     number_of_comments: comments.count(),
                     number_of_closed_comments: solved_comments.count(),
+                    link: format!(
+                        "https://dev.azure.com/{}/_git/{}/pullrequest/{}",
+                        context, repository, x.pull_request_id
+                    ),
                 };
                 Ok(pr)
             });

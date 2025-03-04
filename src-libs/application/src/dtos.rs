@@ -69,6 +69,7 @@ pub struct PullRequestDto {
     #[ts(rename = "numberOfClosedComments")]
     #[serde(rename = "numberOfClosedComments")]
     pub number_of_closed_comments: usize,
+    pub link: String,
 }
 
 impl From<&PullRequest> for PullRequestDto {
@@ -81,6 +82,7 @@ impl From<&PullRequest> for PullRequestDto {
             creation_date: value.creation_date,
             number_of_closed_comments: value.number_of_closed_comments,
             number_of_comments: value.number_of_comments,
+            link: value.link.to_string(),
         }
     }
 }

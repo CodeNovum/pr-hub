@@ -41,4 +41,6 @@ pub struct PullRequest {
     /// The total number of closed comments
     /// (closed, resolved, etc.)
     pub number_of_closed_comments: usize,
+    /// The web link to the pr
+    pub link: String,
 }
