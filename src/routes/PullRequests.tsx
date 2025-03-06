@@ -1,9 +1,12 @@
 import { PullRequestDto } from "../bindings/PullRequestDto";
 import Table from "../components/Table";
+import IconButton from "../components/button/IconButton";
 import { usePullRequests } from "../hooks/usePullRequests";
 import { Root } from "./__root";
+import { LinkIcon } from "@heroicons/react/24/solid";
 import { createRoute } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
+import { open } from "@tauri-apps/plugin-shell";
 import { format } from "date-fns/format";
 import { useMemo } from "react";
 
@@ -64,6 +67,17 @@ const PullRequests = createRoute({
             value.row.original.creationDate
               ? format(new Date(value.row.original.creationDate), "dd.MM.yyyy")
               : "",
+        },
+        {
+          id: "link",
+          header: "Link",
+          enableSorting: false,
+          cell: (value) => (
+            <IconButton
+              icon={<LinkIcon className="h-5 w-5" />}
+              onClick={() => open(value.row.original.link)}
+            />
+          ),
         },
       ],
       [],
