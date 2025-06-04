@@ -1,0 +1,17 @@
+[package]
+name = "src-cli"
+edition = "2024"
+version.workspace = true
+authors.workspace = true
+
+[dependencies]
+clap = { workspace = true }
+tokio = { workspace = true, features = ["rt", "macros", "rt-multi-thread"] }
+application = { path = "../src-libs/application" }
+infrastructure = { path = "../src-libs/infrastructure" }
+log = { workspace = true }
+anyhow = { workspace = true }
+env_logger = { workspace = true }
+dirs = { workspace = true }
+ratatui = { workspace = true }
+crossterm = { workspace = true }
