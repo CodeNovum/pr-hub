@@ -20,5 +20,5 @@ sqlx = { version = "0.8.3", features = ["runtime-tokio", "sqlite"] }
 tauri = { version = "2", features = [] }
 tauri-plugin-log = "2.2.1"
 tauri-plugin-shell = "2"
-tokio = { version = "1.43.0", features = ["rt"] }
+tokio = { version = "1.46.1", features = ["rt"] }
 ts-rs = "6.2.1"
